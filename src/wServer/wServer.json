@@ -24,7 +24,7 @@
         "mode": "Single",
         "key": "B1A5ED",
         "maxConnections": "512",
-        "maxPlayers": "160",
-        "maxPlayersWithPriority": "180"
+        "maxPlayers": "175",
+        "maxPlayersWithPriority": "200"
     }
 }

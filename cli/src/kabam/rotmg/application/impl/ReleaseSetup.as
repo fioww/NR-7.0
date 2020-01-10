@@ -5,13 +5,13 @@ package kabam.rotmg.application.impl
    
    public class ReleaseSetup implements ApplicationSetup
    {
-      private const SERVER:String = "127.0.0.1";
+      private const SERVER:String = "127.0.0.1:8080";
 
       private const UNENCRYPTED:String = "http://" + SERVER;
 
       private const ENCRYPTED:String = "http://" + SERVER;
       
-      private const BUILD_LABEL:String = "RotMG #{VERSION}.{MINOR}";
+      private const BUILD_LABEL:String = "RotMG #{VERSION}-{MINOR}";
       
       public function ReleaseSetup()
       {

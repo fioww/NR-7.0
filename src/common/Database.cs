@@ -598,14 +598,14 @@ namespace common
         public void PurchaseSkin(DbAccount acc, ushort skinType, int cost)
         {
             if (cost > 0)
-                acc.TotalCredits = (int)_db.HashIncrement(acc.Key, "totalCredits", cost);
-            acc.Credits = (int)_db.HashIncrement(acc.Key, "credits", cost);
+                acc.TotalCredits = (int)_db.HashDecrement(acc.Key, "totalCredits", cost);
+            acc.Credits = (int)_db.HashDecrement(acc.Key, "credits", cost);
 
             // not thread safe
             var ownedSkins = acc.Skins.ToList();
             ownedSkins.Add(skinType);
             acc.Skins = ownedSkins.ToArray();
-
+            
             acc.FlushAsync();
         }
 

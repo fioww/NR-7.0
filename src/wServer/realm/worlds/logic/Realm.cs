@@ -53,9 +53,10 @@ namespace wServer.realm.worlds.logic
 
         protected override void Init()
         {
+            var rng = new Random();
             Log.Info("Initializing Game World {0}({1}) from map {2}...", Id, Name, _mapId);
 
-            SBName = _realmNames[Environment.TickCount % _realmNames.Length];
+            SBName = _realmNames[rng.Next(1, _realmNames.Length)];
             FromWorldMap(new MemoryStream(Manager.Resources.Worlds["Realm"].wmap[_mapId - 1]));
             SetPieces.ApplySetPieces(this);
 
