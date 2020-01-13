@@ -73,6 +73,7 @@ namespace wServer.networking.packets
         CHANGEGUILDRANK = 67,
         PLAYSOUND = 68,
         GLOBAL_NOTIFICATION = 69,
-        RESKIN = 70
+        RESKIN = 70,
+        SWITCH_MUSIC = 106
     }
 }

@@ -264,5 +264,13 @@ package kabam.rotmg.core.model
       {
          this.charList = savedCharactersList;
       }
+
+      public function getMenuMusic():String {
+         return this.charList.menuMusic_;
+      }
+
+      public function getDeadMusic():String {
+         return this.charList.deadMusic_;
+      }
    }
 }

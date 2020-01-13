@@ -1344,6 +1344,55 @@ namespace wServer.realm.commands
         }
     }
 
+    class MusicCommand : Command
+    {
+        public MusicCommand() : base("music", reqAdmin: true) { }
+
+        protected override bool Process(Player player, RealmTime time, string music)
+        {
+            var resources = player.Manager.Resources;
+
+            if (string.IsNullOrWhiteSpace(music))
+            {
+                var msg = resources.MusicNames.Aggregate(
+                    "Music Choices: ", (c, p) => c + (p + ", "));
+                player.SendInfo(msg.Substring(0, msg.Length - 2) + ".");
+                return false;
+            }
+
+            var properName = resources.MusicNames
+                .FirstOrDefault(s => s.Equals(music, StringComparison.InvariantCultureIgnoreCase));
+            if (properName == null)
+            {
+                player.SendError($"Music \"{music}\" not found!");
+                return false;
+            }
+
+            var owner = player.Owner;
+            owner.Music = properName;
+
+            foreach (var plr in owner.Players.Values)
+                plr.SendInfo($"World music changed to {properName}.");
+
+            var i = 0;
+            foreach (var plr in owner.Players.Values)
+            {
+                owner.Timers.Add(new WorldTimer(100 * i, (w, t) =>
+                {
+                    if (plr == null)
+                        return;
+
+                    plr.Client.SendPacket(new SwitchMusic()
+                    {
+                        Music = properName
+                    });
+                }));
+                i++;
+            }
+            return true;
+        }
+    }
+
     class VisitCommand : Command
     {
         public VisitCommand() : base("visit", reqAdmin: true) { }

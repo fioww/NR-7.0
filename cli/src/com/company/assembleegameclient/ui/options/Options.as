@@ -2,12 +2,11 @@ package com.company.assembleegameclient.ui.options
 {
    import com.company.assembleegameclient.game.GameSprite;
    import com.company.assembleegameclient.parameters.Parameters;
-   import com.company.assembleegameclient.screens.TitleMenuOption;
    import com.company.assembleegameclient.sound.Music;
    import com.company.assembleegameclient.sound.SFX;
+   import com.company.assembleegameclient.screens.TitleMenuOption;
    import com.company.rotmg.graphics.ScreenGraphic;
-import com.company.ui.SimpleText;
-import com.company.ui.SimpleText;
+   import com.company.ui.SimpleText;
    import com.company.util.KeyCodes;
    import flash.display.Sprite;
    import flash.display.StageDisplayState;
@@ -311,23 +310,51 @@ import com.company.ui.SimpleText;
 
       private function addSoundOptions() : void
       {
-         this.addOption(new ChoiceOption("playMusic",new <String>["On","Off"],[true,false],"Play Music","This toggles whether music is played",this.onPlayMusicChange));
-         this.addOption(new Sprite());
-         this.addOption(new ChoiceOption("playSFX",new <String>["On","Off"],[true,false],"Play Sound Effects","This toggles whether sound effects are played",this.onPlaySoundEffectsChange));
-         this.addOption(new Sprite());
-         this.addOption(new ChoiceOption("playPewPew",new <String>["On","Off"],[true,false],"Play Weapon Sounds","This toggles whether weapon sounds are played",null));
+         this.addOptionAndPosition(new ChoiceOption("playMusic", new <String>["On","Off"], [true, false], "Play Music","This toggles whether music is played", this.onPlayMusicChange));
+         this.addOptionAndPosition(new SliderOption("musicVolume", this.onMusicVolumeChange), -120, 15);
+         this.addOptionAndPosition(new ChoiceOption("playSFX", new <String>["On","Off"],[true,false],"Play Sound Effects","This toggles whether sound effects are played", this.onPlaySoundEffectsChange));
+         this.addOptionAndPosition(new SliderOption("SFXVolume", this.onSoundEffectsVolumeChange), -120, 34);
+         this.addOptionAndPosition(new ChoiceOption("playPewPew", new <String>["On","Off"],[true,false],"Play Weapon Sounds","This toggles whether weapon sounds are played", null));
       }
-      
-      private function onPlayMusicChange() : void
+
+      private function onPlayMusicChange():void
       {
          Music.setPlayMusic(Parameters.data_.playMusic);
+         this.refresh();
       }
-      
-      private function onPlaySoundEffectsChange() : void
+
+      private function onPlaySoundEffectsChange():void
       {
          SFX.setPlaySFX(Parameters.data_.playSFX);
+         if (((Parameters.data_.playSFX) || (Parameters.data_.playPewPew))) {
+            SFX.setSFXVolume(1);
+         }
+         else {
+            SFX.setSFXVolume(0);
+         }
+         this.refresh();
       }
-      
+
+      private function onMusicVolumeChange(volume:Number):void
+      {
+         Music.setMusicVolume(volume);
+      }
+
+      private function onSoundEffectsVolumeChange(volume:Number):void
+      {
+         SFX.setSFXVolume(volume);
+      }
+
+      private function addOptionAndPosition(option:Option, offsetX:Number = 0, offsetY:Number = 0):void {
+         var positionOption:Function;
+         positionOption = function ():void {
+            option.x = (((((options_.length % 2) == 0)) ? 20 : 415) + offsetX);
+            option.y = (((int((options_.length / 2)) * 44) + 122) + offsetY);
+         };
+         option.textChanged.addOnce(positionOption);
+         this.addOption(option);
+      }
+
       private function addOption(option:Sprite) : void
       {
          option.x = this.optionIndex_ % 2 == 0?Number(20):Number(415);

@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,12 @@ namespace common.resources
     {
         static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public readonly string ResourcePath;
-        public readonly XmlData GameData;
-        public readonly Dictionary<string, byte[]> WebFiles = new Dictionary<string, byte[]>();
-        public readonly WorldData Worlds;
-        public readonly AppSettings Settings;
+        public string ResourcePath { get; private set; }
+        public XmlData GameData { get; private set; }
+        public IDictionary<string, byte[]> WebFiles { get; private set; }
+        public WorldData Worlds { get; private set; }
+        public AppSettings Settings { get; private set; }
+        public IList<string> MusicNames { get; private set; }
 
         public Resources(string resourcePath, bool wServer = false)
         {
@@ -33,11 +35,19 @@ namespace common.resources
             {
                 Worlds = new WorldData(resourcePath + "/worlds", GameData);
             }
+
+            music(resourcePath);
         }
 
-        void webFiles(string dir)
+        private void webFiles(string dir)
         {
             Log.Info("Loading web data...");
+
+            Dictionary<string, byte[]> webFiles;
+
+            WebFiles =
+                new ReadOnlyDictionary<string, byte[]>(
+                    webFiles = new Dictionary<string, byte[]>());
 
             var files = Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories);
             foreach (var file in files)
@@ -45,8 +55,21 @@ namespace common.resources
                 var webPath = file.Substring(dir.Length, file.Length - dir.Length)
                     .Replace("\\", "/");
 
-                WebFiles[webPath] = File.ReadAllBytes(file);
+                webFiles[webPath] = File.ReadAllBytes(file);
             }
+        }
+
+        private void music(string baseDir)
+        {
+            List<string> music;
+
+            MusicNames =
+                new ReadOnlyCollection<string>(
+                    music = new List<string>());
+
+            music.AddRange(Directory
+                .EnumerateFiles(baseDir + "/web/music", "*.mp3", SearchOption.AllDirectories)
+                .Select(Path.GetFileNameWithoutExtension));
         }
 
         public void Dispose()

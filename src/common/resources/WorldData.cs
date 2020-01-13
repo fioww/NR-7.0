@@ -25,6 +25,7 @@ namespace common.resources
         public bool setpiece;
         public int[] portals;
         public string[] maps;
+        public string[] music;
         public byte[][] wmap;
     }
 

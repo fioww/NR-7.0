@@ -5,11 +5,10 @@ package com.company.assembleegameclient.util
    import com.company.assembleegameclient.map.RegionLibrary;
    import com.company.assembleegameclient.objects.ObjectLibrary;
    import com.company.assembleegameclient.objects.particles.ParticleLibrary;
-   import com.company.assembleegameclient.parameters.Parameters;
-   import com.company.assembleegameclient.sound.Music;
    import com.company.assembleegameclient.sound.SFX;
-   import com.company.assembleegameclient.sound.SoundEffectLibrary;
-   import com.company.util.AssetLibrary;
+   import com.company.assembleegameclient.parameters.Parameters;
+import com.company.assembleegameclient.sound.SoundEffectLibrary;
+import com.company.util.AssetLibrary;
    import flash.display.BitmapData;
    import flash.utils.ByteArray;
    import kabam.rotmg.assets.EmbeddedAssets;
@@ -35,7 +34,6 @@ package com.company.assembleegameclient.util
          this.parseObjectFiles();
          this.parseRegionFiles();
          Parameters.load();
-         Music.load();
          SFX.load();
       }
       

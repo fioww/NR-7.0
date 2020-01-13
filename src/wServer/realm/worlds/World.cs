@@ -56,6 +56,7 @@ namespace wServer.realm.worlds
         public bool ShowDisplays { get; protected set; }
         public bool Persist { get; protected set; }
         public int Blocking { get; protected set; }
+        public string Music { get; set; }
 
         public Wmap Map { get; private set; }
         public bool Deleted { get; protected set; }
@@ -94,6 +95,11 @@ namespace wServer.realm.worlds
             AllowTeleport = !proto.restrictTp;
             ShowDisplays = proto.showDisplays;
             Blocking = proto.blocking;
+            var rnd = new Random();
+            if (proto.music != null)
+                Music = proto.music[rnd.Next(0, proto.music.Length)];
+            else
+                Music = "sorc";
         }
 
         private void Setup()

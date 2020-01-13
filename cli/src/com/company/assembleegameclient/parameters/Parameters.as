@@ -170,9 +170,9 @@ import flash.net.SharedObject;
          setDefaultKey("useMagicPotion",KeyCodes.V);
          setDefaultKey("switchTabs", KeyCodes.B);
          setDefault("playerObjectType",782);
-         setDefault("playMusic",true);
-         setDefault("playSFX",true);
-         setDefault("playPewPew",true);
+         setDefault("playMusic", true);
+         setDefault("playSFX", true);
+         setDefault("playPewPew", true);
          setDefault("centerOnPlayer",true);
          setDefault("preferredServer",null);
          setDefault("cameraAngle",7 * Math.PI / 4);
@@ -180,6 +180,18 @@ import flash.net.SharedObject;
          setDefault("showQuestPortraits",true);
          setDefault("allowRotation",false);
          setDefault("charIdUseMap",{});
+         if (((data_.hasOwnProperty("playMusic")) && ((data_.playMusic == true)))) {
+            setDefault("musicVolume", 1);
+         }
+         else {
+            setDefault("musicVolume", 0);
+         }
+         if (((data_.hasOwnProperty("playSFX")) && ((data_.playMusic == true)))) {
+            setDefault("SFXVolume", 1);
+         }
+         else {
+            setDefault("SFXVolume", 0);
+         }
          setDefault("drawShadows",true);
          setDefault("textBubbles",true);
          setDefault("showTradePopup",true);

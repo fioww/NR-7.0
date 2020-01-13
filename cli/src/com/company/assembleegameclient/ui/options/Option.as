@@ -7,13 +7,16 @@ package com.company.assembleegameclient.ui.options
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.filters.DropShadowFilter;
-   
-   public class Option extends Sprite
+
+import org.osflash.signals.Signal;
+
+public class Option extends Sprite
    {
       
       private static var tooltip_:ToolTip;
-       
-      
+
+      public var textChanged:Signal;
+
       public var paramName_:String;
       
       public var tooltipText_:String;
@@ -23,6 +26,7 @@ package com.company.assembleegameclient.ui.options
       public function Option(paramName:String, desc:String, tooltipText:String)
       {
          super();
+         this.textChanged = new Signal();
          this.paramName_ = paramName;
          this.tooltipText_ = tooltipText;
          this.desc_ = new SimpleText(18,11776947,false,0,0);

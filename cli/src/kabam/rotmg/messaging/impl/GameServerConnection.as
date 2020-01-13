@@ -6,8 +6,8 @@ package kabam.rotmg.messaging.impl
    import com.company.assembleegameclient.game.events.ReconnectEvent;
    import com.company.assembleegameclient.map.GroundLibrary;
    import com.company.assembleegameclient.map.Map;
-import com.company.assembleegameclient.map.mapoverlay.CharacterStatusText;
-import com.company.assembleegameclient.objects.Container;
+   import com.company.assembleegameclient.map.mapoverlay.CharacterStatusText;
+   import com.company.assembleegameclient.objects.Container;
    import com.company.assembleegameclient.objects.FlashDescription;
    import com.company.assembleegameclient.objects.GameObject;
    import com.company.assembleegameclient.objects.Merchant;
@@ -34,6 +34,7 @@ import com.company.assembleegameclient.objects.Container;
    import com.company.assembleegameclient.objects.particles.ThrowEffect;
    import com.company.assembleegameclient.objects.thrown.ThrowProjectileEffect;
    import com.company.assembleegameclient.parameters.Parameters;
+   import com.company.assembleegameclient.sound.Music;
    import com.company.assembleegameclient.sound.SoundEffectLibrary;
    import com.company.assembleegameclient.ui.PicView;
    import com.company.assembleegameclient.ui.dialogs.Dialog;
@@ -63,9 +64,10 @@ import com.company.assembleegameclient.objects.Container;
    import kabam.lib.net.impl.SocketServer;
    import kabam.rotmg.account.core.Account;
    import kabam.rotmg.classes.model.CharacterClass;
-import kabam.rotmg.classes.model.CharacterSkin;
-import kabam.rotmg.classes.model.CharacterSkinState;
-import kabam.rotmg.classes.model.ClassesModel;
+   import kabam.rotmg.classes.model.CharacterSkin;
+   import kabam.rotmg.classes.model.CharacterSkinState;
+   import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
+   import kabam.rotmg.classes.model.ClassesModel;
    import kabam.rotmg.constants.GeneralConstants;
    import kabam.rotmg.constants.ItemConstants;
    import kabam.rotmg.core.StaticInjectorContext;
@@ -80,8 +82,8 @@ import kabam.rotmg.classes.model.ClassesModel;
    import kabam.rotmg.game.signals.AddSpeechBalloonSignal;
    import kabam.rotmg.game.signals.AddTextLineSignal;
    import kabam.rotmg.game.view.components.QueuedStatusText;
-import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
-import kabam.rotmg.messaging.impl.data.GroundTileData;
+   import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
+   import kabam.rotmg.messaging.impl.data.GroundTileData;
    import kabam.rotmg.messaging.impl.data.ObjectData;
    import kabam.rotmg.messaging.impl.data.ObjectStatusData;
    import kabam.rotmg.messaging.impl.data.StatData;
@@ -110,7 +112,7 @@ import kabam.rotmg.messaging.impl.data.GroundTileData;
    import kabam.rotmg.messaging.impl.incoming.PlaySound;
    import kabam.rotmg.messaging.impl.incoming.QuestObjId;
    import kabam.rotmg.messaging.impl.incoming.Reconnect;
-import kabam.rotmg.messaging.impl.incoming.ServerPlayerShoot;
+   import kabam.rotmg.messaging.impl.incoming.ServerPlayerShoot;
    import kabam.rotmg.messaging.impl.incoming.ShowEffect;
    import kabam.rotmg.messaging.impl.incoming.Text;
    import kabam.rotmg.messaging.impl.incoming.TradeAccepted;
@@ -164,8 +166,8 @@ import kabam.rotmg.messaging.impl.incoming.ServerPlayerShoot;
    import kabam.rotmg.ui.signals.ShowKeySignal;
    import kabam.rotmg.ui.signals.ShowKeyUISignal;
    import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
-import kabam.rotmg.ui.view.FlexibleDialog;
-import kabam.rotmg.ui.view.NotEnoughGoldDialog;
+   import kabam.rotmg.ui.view.FlexibleDialog;
+   import kabam.rotmg.ui.view.NotEnoughGoldDialog;
    import org.swiftsuspenders.Injector;
    import robotlegs.bender.framework.api.ILogger;
    
@@ -243,6 +245,7 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
       public static const PLAYSOUND:int = 68;
       public static const GLOBAL_NOTIFICATION:int = 69;
       public static const RESKIN:int = 70;
+      public static const SWITCH_MUSIC = 106;
       
       private static const TO_MILLISECONDS:int = 1000;
       public static var instance:GameServerConnection;
@@ -422,6 +425,11 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
          messages.map(FILE).toMessage(File).toMethod(this.onFile);
          messages.map(INVITEDTOGUILD).toMessage(InvitedToGuild).toMethod(this.onInvitedToGuild);
          messages.map(PLAYSOUND).toMessage(PlaySound).toMethod(this.onPlaySound);
+         messages.map(SWITCH_MUSIC).toMessage(SwitchMusic).toMethod(this.onSwitchMusic);
+      }
+
+      private function onSwitchMusic(sm:SwitchMusic):void {
+         Music.load(sm.music);
       }
       
       private function unmapMessages() : void
@@ -497,6 +505,7 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
          messages.unmap(FILE);
          messages.unmap(INVITEDTOGUILD);
          messages.unmap(PLAYSOUND);
+         messages.unmap(SWITCH_MUSIC);
       }
       
       private function encryptConnection() : void
@@ -1710,6 +1719,7 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
       {
          this.gs_.applyMapInfo(mapInfo);
          this.rand_ = new Random(mapInfo.fp_);
+         Music.load(mapInfo.music);
          if(this.createCharacter_)
          {
             this.create();

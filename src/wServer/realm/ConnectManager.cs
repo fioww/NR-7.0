@@ -312,6 +312,7 @@ namespace wServer.realm
             var mapSize = Math.Max(world.Map.Width, world.Map.Height);
             client.SendPacket(new MapInfo()
             {
+                Music = world.Music,
                 Width = mapSize,
                 Height = mapSize,
                 Name = world.Name,

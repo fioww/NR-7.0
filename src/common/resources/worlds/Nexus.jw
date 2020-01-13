@@ -9,6 +9,6 @@
     "restrictTp": false,
     "showDisplays": true,
     "portals": [ 1821 ],
-    "music": [ "" ],
-    "maps": [ "Nexus.jm" ]
+    "maps": [ "Nexus.jm" ],
+    "music": [ "death" ]
 }

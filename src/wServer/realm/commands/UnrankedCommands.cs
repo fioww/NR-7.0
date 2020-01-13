@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using wServer.networking.packets;
 using wServer.networking.packets.incoming;
 using wServer.networking.packets.outgoing;
+using File = TagLib.File;
 
 namespace wServer.realm.commands
 {
@@ -104,6 +105,24 @@ namespace wServer.realm.commands
                 DurationMS = -1
             });
             player.SendInfo("Game paused.");
+            return true;
+        }
+    }
+
+    class CurrentSongCommand : Command
+    {
+        public CurrentSongCommand() : base("currentsong", alias: "song") { }
+
+        protected override bool Process(Player player, RealmTime time, string args)
+        {
+            var properName = player.Owner.Music;
+            var file = File.Create(Environment.CurrentDirectory + $"/resources/web/music/{properName}.mp3");
+            var artist = file.Tag.FirstPerformer ?? "Unknown";
+            var title = file.Tag.Title ?? properName;
+            var album = file.Tag.Album != null ? $" from {file.Tag.Album}" : "";
+            var filename = $" ({properName}.mp3)";
+
+            player.SendInfo($"Current Song: {title} by {artist}{album}{filename}.");
             return true;
         }
     }

@@ -1,9 +1,11 @@
 ﻿<AppSettings>
+  <MenuMusic>queue</MenuMusic>
+  <DeadMusic>death</DeadMusic>
   <NewAccounts>
     <MaxCharSlot>1</MaxCharSlot>
     <VaultCount>1</VaultCount>
     <Fame>0</Fame>
-    <Credits>0</Credits>
+    <Credits>100</Credits>
     <SlotCost>1500</SlotCost>
     <SlotCurrency>1</SlotCurrency>
     <!--<ClassesUnlocked/>-->

@@ -45,6 +45,9 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.6.6\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -62,6 +65,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Empty.cs" />
@@ -71,6 +77,8 @@
     <Compile Include="logic\behaviors\BackAndForth.cs" />
     <Compile Include="logic\behaviors\BringEnemy.cs" />
     <Compile Include="logic\behaviors\Buzz.cs" />
+    <Compile Include="logic\behaviors\ChangeMusic.cs" />
+    <Compile Include="logic\behaviors\ChangeMusicOnDeath.cs" />
     <Compile Include="logic\behaviors\ChangeSize.cs" />
     <Compile Include="logic\behaviors\Charge.cs" />
     <Compile Include="logic\behaviors\ConditionalEffect.cs" />
@@ -294,6 +302,7 @@
     <Compile Include="networking\packets\outgoing\Reconnect.cs" />
     <Compile Include="networking\packets\outgoing\ServerPlayerShoot.cs" />
     <Compile Include="networking\packets\outgoing\ShowEffect.cs" />
+    <Compile Include="networking\packets\outgoing\SwitchMusic.cs" />
     <Compile Include="networking\packets\outgoing\Text.cs" />
     <Compile Include="networking\packets\outgoing\TradeAccepted.cs" />
     <Compile Include="networking\packets\outgoing\TradeChanged.cs" />

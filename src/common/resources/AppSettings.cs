@@ -15,11 +15,15 @@ namespace common.resources
         public readonly int MaxStackablePotions;
         public readonly NewAccounts NewAccounts;
         public readonly NewCharacters NewCharacters;
+        public readonly string MenuMusic;
+        public readonly string DeadMusic;
 
         public AppSettings(string dir)
         {
             XElement e = XElement.Parse(Utils.Read(dir));
             Xml = e;
+            MenuMusic = e.GetValue<string>("MenuMusic");
+            DeadMusic = e.GetValue<string>("DeadMusic");
             UseExternalPayments = e.GetValue<int>("UseExternalPayments");
             MaxStackablePotions = e.GetValue<int>("MaxStackablePotions");
 

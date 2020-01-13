@@ -13,6 +13,7 @@ namespace wServer.networking.packets.outgoing
         public int Background { get; set; }
         public bool AllowPlayerTeleport { get; set; }
         public bool ShowDisplays { get; set; }
+        public string Music { get; set; }
 
         public override PacketId ID => PacketId.MAPINFO;
         public override Packet CreateInstance() { return new MapInfo(); }
@@ -28,6 +29,7 @@ namespace wServer.networking.packets.outgoing
             Difficulty = rdr.ReadInt32();
             AllowPlayerTeleport = rdr.ReadBoolean();
             ShowDisplays = rdr.ReadBoolean();
+            Music = rdr.ReadUTF();
         }
 
         protected override void Write(NWriter wtr)
@@ -41,6 +43,7 @@ namespace wServer.networking.packets.outgoing
             wtr.Write(Difficulty);
             wtr.Write(AllowPlayerTeleport);
             wtr.Write(ShowDisplays);
+            wtr.WriteUTF(Music);
         }
     }
 }
