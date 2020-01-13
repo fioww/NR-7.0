@@ -10,7 +10,7 @@ import flash.net.SharedObject;
    public class Parameters
    {
       public static const BUILD_VERSION:String = "7.0";
-      public static const MINOR_VERSION:String = "1.0";
+      public static const MINOR_VERSION:String = "2.1";
       public static const ENABLE_ENCRYPTION:Boolean = true;
       public static const PORT:int = 2050;
       public static const FELLOW_GUILD_COLOR:uint = 10944349;

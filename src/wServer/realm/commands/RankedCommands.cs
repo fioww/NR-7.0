@@ -482,6 +482,16 @@ namespace wServer.realm.commands
             }
 
             var item = gameData.Items[objType];
+
+            /*if (player.Client.Account.Rank < 100 &&
+                (item.DisplayName.Equals("Boshy Gun") ||
+                 item.DisplayName.Equals("Boshy Shotgun") ||
+                 item.DisplayName.Equals("Oryx's Arena Key")))
+            {
+                player.SendError("Insufficient rank for that item.");
+                return false;
+            }*/
+
             var availableSlot = player.Inventory.GetAvailableInventorySlot(item);
             if (availableSlot != -1)
             {

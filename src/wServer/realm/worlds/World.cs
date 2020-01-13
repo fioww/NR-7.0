@@ -99,7 +99,7 @@ namespace wServer.realm.worlds
             if (proto.music != null)
                 Music = proto.music[rnd.Next(0, proto.music.Length)];
             else
-                Music = "sorc";
+                Music = "Test";
         }
 
         private void Setup()

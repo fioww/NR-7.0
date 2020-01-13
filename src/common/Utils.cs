@@ -168,6 +168,31 @@ namespace common
             return GetInt(str);
         }
 
+        public static int FromString(string x)
+        {
+            int val = 0;
+            try
+            {
+                val = x.StartsWith("0x") ? Int32.Parse(x.Substring(2), NumberStyles.HexNumber) : Int32.Parse(x);
+            }
+            catch { }
+
+            return val;
+        }
+
+        public static string GetBasePath(string folder)
+        {
+            return Path.Combine(GetAssemblyDirectory(), folder);
+        }
+
+        public static string GetAssemblyDirectory()
+        {
+            var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            var uri = new UriBuilder(codeBase);
+            var path = Uri.UnescapeDataString(uri.Path);
+            return Path.GetDirectoryName(path);
+        }
+
         public static T[] CommaToArray<T>(this string x)
         {
             if (typeof(T) == typeof(ushort))

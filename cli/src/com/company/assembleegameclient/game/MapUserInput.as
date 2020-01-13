@@ -491,7 +491,20 @@ import net.hires.debug.Stats;
          {
             slotId = slotId + GeneralConstants.NUM_INVENTORY_SLOTS;
          }
-         GameServerConnection.instance.useItem_new(this.gs_.map.player_,slotId);
+         var slotIndex:int = ObjectLibrary.getMatchingSlotIndex(this.gs_.map.player_.equipment_[slotId], this.gs_.map.player_);
+         if (slotIndex != -1) {
+            GameServerConnection.instance.invSwap(
+                    this.gs_.map.player_,
+                    this.gs_.map.player_,
+                    slotId,
+                    this.gs_.map.player_.equipment_[slotId],
+                    this.gs_.map.player_,
+                    slotIndex,
+                    this.gs_.map.player_.equipment_[slotIndex]);
+         }
+         else {
+            GameServerConnection.instance.useItem_new(this.gs_.map.player_, slotId);
+         }
       }
       
       private function togglePerformanceStats() : void
