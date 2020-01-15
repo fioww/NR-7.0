@@ -11,7 +11,7 @@ package kabam.rotmg.application.impl
 
       private const ENCRYPTED:String = "http://" + SERVER;
       
-      private const BUILD_LABEL:String = "RotMG #{VERSION}-{MINOR}";
+      private const BUILD_LABEL:String = "RotMG Release #{RELEASE} X{CUSTOM-RELEASE}";
       
       public function ReleaseSetup()
       {
@@ -25,7 +25,7 @@ package kabam.rotmg.application.impl
 
       public function getBuildLabel() : String
       {
-         return this.BUILD_LABEL.replace("{VERSION}",Parameters.BUILD_VERSION).replace("{MINOR}",Parameters.MINOR_VERSION);
+         return this.BUILD_LABEL.replace("{RELEASE}",Parameters.RELEASE_VERSION).replace("{CUSTOM-RELEASE}",Parameters.CUSTOM_VERSION);
       }
       
       public function isGameLoopMonitored() : Boolean

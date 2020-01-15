@@ -940,7 +940,7 @@ package kabam.rotmg.messaging.impl
          this.addTextLine.dispatch(new AddTextLineVO(Parameters.CLIENT_CHAT_NAME,"Connected!"));
          this.encryptConnection();
          var hello:Hello = this.messages.require(HELLO) as Hello;
-         hello.buildVersion_ = Parameters.BUILD_VERSION;
+         hello.buildVersion_ = Parameters.RELEASE_VERSION;
          hello.gameId_ = this.gameId_;
          hello.guid_ = this.rsaEncrypt(account.getUserId());
          hello.password_ = this.rsaEncrypt(account.getPassword());
@@ -1930,7 +1930,7 @@ package kabam.rotmg.messaging.impl
       
       private function handleIncorrectVersionFailure(event:Failure) : void
       {
-         var dialog:Dialog = new Dialog("Client version: " + Parameters.BUILD_VERSION + "\nServer version: " + event.errorDescription_,"Client Update Needed","Ok",null);
+         var dialog:Dialog = new Dialog("Client version: " + Parameters.RELEASE_VERSION + "\nServer version: " + event.errorDescription_,"Client Update Needed","Ok",null);
          dialog.addEventListener(Dialog.BUTTON1_EVENT,this.onDoClientUpdate);
          this.gs_.stage.addChild(dialog);
          this.retryConnection_ = false;

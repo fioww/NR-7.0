@@ -10,5 +10,6 @@
     "restrictTp": true,
     "showDisplays": false,
     "portals": [ 0x072f ],
-    "maps": [ "GuildHall0.wmap", "GuildHall1.wmap", "GuildHall2.wmap", "GuildHall3.wmap" ]
+    "maps": [ "GuildHall0.wmap", "GuildHall1.wmap", "GuildHall2.wmap", "GuildHall3.wmap" ],
+    "music": [ "summer" ]
 }
