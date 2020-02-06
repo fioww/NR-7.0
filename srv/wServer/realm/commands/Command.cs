@@ -11,13 +11,11 @@ namespace wServer.realm.commands
 
         public string CommandName { get; private set; }
         public string Alias { get; private set; }
-        public bool RequiresAdmin { get; private set; }
         public bool ListCommand { get; private set; }
 
-        protected Command(string name, bool reqAdmin = false, string alias = null, bool listCommand = true)
+        protected Command(string name, string alias = null, bool listCommand = true)
         {
             CommandName = name;
-            RequiresAdmin = reqAdmin;
             ListCommand = listCommand;
             Alias = alias;
         }
@@ -26,7 +24,7 @@ namespace wServer.realm.commands
 
         public bool HasPermission(Player player)
         {
-            return !RequiresAdmin || (RequiresAdmin && player.Client.Account.Admin);
+            return true;
         }
 
         public bool Execute(Player player, RealmTime time, string args, bool bypassPermission = false)

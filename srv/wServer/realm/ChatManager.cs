@@ -55,6 +55,7 @@ namespace wServer.realm
                     Name = (src.Client.Account.Admin ? "@" : "") + src.Name,
                     ObjectId = src.Id,
                     NumStars = src.Stars,
+                    Admin = src.Admin,
                     BubbleTime = 5,
                     Recipient = "",
                     Txt = text
@@ -74,6 +75,7 @@ namespace wServer.realm
                 Name = (src.Client.Account.Admin ? "@" : "") + src.Name,
                 ObjectId = src.Id,
                 NumStars = src.Stars,
+                Admin = src.Admin,
                 BubbleTime = 5,
                 Recipient = "",
                 Txt = text
@@ -177,7 +179,7 @@ namespace wServer.realm
                 return false;
 
             var acc = manager.Database.GetAccount(id);
-            if (acc == null)
+            if (acc == null /*|| acc.Hidden && src.Admin == 0*/)
                 return false;
 
             manager.InterServer.Publish(Channel.Chat, new ChatMsg()
@@ -186,6 +188,7 @@ namespace wServer.realm
                 Inst = manager.InstanceId,
                 ObjId = src.Id,
                 Stars = src.Stars,
+                Admin = src.Admin,
                 From = src.Client.Account.AccountId,
                 To = id,
                 Text = text,
@@ -205,6 +208,7 @@ namespace wServer.realm
                 Inst = manager.InstanceId,
                 ObjId = src.Id,
                 Stars = src.Stars,
+                Admin = src.Admin,
                 From = src.Client.Account.AccountId,
                 To = src.Client.Account.GuildId,
                 Text = text
@@ -271,6 +275,7 @@ namespace wServer.realm
                             .Where(x => x.Player != null)
                             .Where(x => x.Account.GuildId > 0)
                             .Where(x => x.Account.GuildId == e.Content.To)
+                            .Where(x => /*!e.Content.Hidden ||*/ x.Account.Admin)
                             .Select(x => x.Player))
                         {
                             i.GuildReceived(-1, -1, 0, "", e.Content.Text);

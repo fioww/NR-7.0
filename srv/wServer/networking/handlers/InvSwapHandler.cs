@@ -88,7 +88,7 @@ namespace wServer.networking.handlers
             conBTrans[slotB] = itemA;
             conATrans[slotA] = itemB;
 
-            // validate that soulbound items are not placed in public bags (includes any swaped item from admins)
+            // validate that soulbound items are not placed in public bags (includes any swapped item from admins)
             if (!ValidateItemSwap(player, a, itemB))
             {
                 queue.Enqueue(() => DropInSoulboundBag(player, itemB));

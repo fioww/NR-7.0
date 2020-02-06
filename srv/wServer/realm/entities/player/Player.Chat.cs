@@ -206,6 +206,18 @@ namespace wServer.realm.entities
             });
         }
 
+        public void SendGuildDeath(string text)
+        {
+            _client.SendPacket(new Text()
+            {
+                BubbleTime = 0,
+                NumStars = -1,
+                Name = "",
+                Txt = text//,
+                //TextColor = 0x00b300
+            });
+        }
+
         public void SendEnemyFormat(string name, string text, params object[] args)
         {
             _client.SendPacket(new Text()
@@ -224,6 +236,7 @@ namespace wServer.realm.entities
                 ObjectId = objId,
                 BubbleTime = 10,
                 NumStars = stars,
+                Admin = admin,
                 Name = from,
                 Recipient = to,
                 Txt = text
@@ -242,6 +255,7 @@ namespace wServer.realm.entities
                 ObjectId = objId,
                 BubbleTime = 10,
                 NumStars = stars,
+                Admin = admin,
                 Name = from,
                 Recipient = "*Guild*",
                 Txt = text

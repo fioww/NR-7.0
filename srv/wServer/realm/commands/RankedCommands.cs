@@ -18,6 +18,7 @@ using NLog;
 
 namespace wServer.realm.commands
 {
+    /*
     class SpawnCommand : Command
     {
         static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -41,7 +42,7 @@ namespace wServer.realm.commands
 
         private const int Delay = 3; // in seconds
 
-        public SpawnCommand() : base("spawn", reqAdmin: true) { }
+        public SpawnCommand() : base("spawn", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -63,6 +64,17 @@ namespace wServer.realm.commands
             catch (Exception)
             {
                 player.SendError("JSON not formatted correctly!");
+                return false;
+            }
+
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+            if (player.Owner is Nexus && player.Rank < 90)
+            {
+                player.SendError("Forbidden.");
                 return false;
             }
 
@@ -289,10 +301,16 @@ namespace wServer.realm.commands
 
     class ClearSpawnsCommand : Command
     {
-        public ClearSpawnsCommand() : base("clearspawn", reqAdmin: true, alias: "cs") { }
+        public ClearSpawnsCommand() : base("clearspawn", 30, alias: "cs") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             var iterations = 0;
             var lastKilled = -1;
             var removed = 0;
@@ -320,10 +338,16 @@ namespace wServer.realm.commands
 
     class ClearGravesCommand : Command
     {
-        public ClearGravesCommand() : base("cleargraves", reqAdmin: true, alias: "cgraves") { }
+        public ClearGravesCommand() : base("cleargraves", 30, alias: "cgraves") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             var removed = 0;
             foreach (var entity in player.Owner.StaticObjects.Values)
             {
@@ -344,10 +368,16 @@ namespace wServer.realm.commands
 
     class ToggleEffCommand : Command
     {
-        public ToggleEffCommand() : base("eff", reqAdmin: true) { }
+        public ToggleEffCommand() : base("eff", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 90)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             ConditionEffectIndex effect;
             if (!Enum.TryParse(args, true, out effect))
             {
@@ -378,9 +408,37 @@ namespace wServer.realm.commands
         }
     }
 
+    class GodmodeCommand : Command
+    {
+        public GodmodeCommand() : base("toggleGodmode", 80, "godmode") { }
+
+        protected override bool Process(Player player, RealmTime time, string args)
+        {
+            if (player.HasConditionEffect(ConditionEffects.Invulnerable))
+            {
+                //remove
+                player.ApplyConditionEffect(new ConditionEffect()
+                {
+                    Effect = ConditionEffectIndex.Invulnerable,
+                    DurationMS = 0
+                });
+            }
+            else
+            {
+                //add
+                player.ApplyConditionEffect(new ConditionEffect()
+                {
+                    Effect = ConditionEffectIndex.Invulnerable,
+                    DurationMS = -1
+                });
+            }
+            return true;
+        }
+    }
+
     class GuildRankCommand : Command
     {
-        public GuildRankCommand() : base("grank", reqAdmin: true) { }
+        public GuildRankCommand() : base("grank", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -457,10 +515,16 @@ namespace wServer.realm.commands
 
     class GimmeCommand : Command
     {
-        public GimmeCommand() : base("gimme", reqAdmin: true, alias: "give") { }
+        public GimmeCommand() : base("gimme", 30, alias: "give") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             var gameData = player.Manager.Resources.GameData;
 
             ushort objType;
@@ -483,14 +547,14 @@ namespace wServer.realm.commands
 
             var item = gameData.Items[objType];
 
-            /*if (player.Client.Account.Rank < 100 &&
-                (item.DisplayName.Equals("Boshy Gun") ||
-                 item.DisplayName.Equals("Boshy Shotgun") ||
-                 item.DisplayName.Equals("Oryx's Arena Key")))
-            {
-                player.SendError("Insufficient rank for that item.");
-                return false;
-            }*/
+            //if (player.Client.Account.Rank < 100 &&
+            //    (item.DisplayName.Equals("Boshy Gun") ||
+            //     item.DisplayName.Equals("Boshy Shotgun") ||
+            //     item.DisplayName.Equals("Oryx's Arena Key")))
+            //{
+            //    player.SendError("Insufficient rank for that item.");
+            //    return false;
+            //}
 
             var availableSlot = player.Inventory.GetAvailableInventorySlot(item);
             if (availableSlot != -1)
@@ -506,7 +570,7 @@ namespace wServer.realm.commands
 
     class TpPosCommand : Command
     {
-        public TpPosCommand() : base("tpPos", reqAdmin: true, alias: "goto") { }
+        public TpPosCommand() : base("tpPos", 90, alias: "goto") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -533,10 +597,16 @@ namespace wServer.realm.commands
 
     class SetpieceCommand : Command
     {
-        public SetpieceCommand() : base("setpiece", reqAdmin: true) { }
+        public SetpieceCommand() : base("setpiece", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string setPiece)
         {
+            if (!(player.Owner is Test) && player.Rank < 90)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             if (String.IsNullOrWhiteSpace(setPiece))
             {
                 var type = typeof(ISetPiece);
@@ -549,7 +619,7 @@ namespace wServer.realm.commands
                 return false;
             }
 
-            if (!player.Owner.Name.Equals("Nexus"))
+            if (!player.Owner.Name.Equals("Nexus") && player.Rank < 100)
             {
                 try
                 {
@@ -574,10 +644,16 @@ namespace wServer.realm.commands
   
     class KillAllCommand : Command
     {
-        public KillAllCommand() : base("killAll", reqAdmin: true, alias: "ka") { }
+        public KillAllCommand() : base("killAll", 30, alias: "ka") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 90)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             var iterations = 0;
             var lastKilled = -1;
             var killed = 0;
@@ -604,10 +680,16 @@ namespace wServer.realm.commands
 
     class KickCommand : Command
     {
-        public KickCommand() : base("kick", reqAdmin: true) { }
+        public KickCommand() : base("kick", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             foreach (var i in player.Manager.Clients.Keys)
             {
                 if (i.Account.Name.EqualsIgnoreCase(args))
@@ -624,7 +706,7 @@ namespace wServer.realm.commands
 
     class GetQuestCommand : Command
     {
-        public GetQuestCommand() : base("getQuest", reqAdmin: true) { }
+        public GetQuestCommand() : base("getQuest", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -640,7 +722,7 @@ namespace wServer.realm.commands
 
     class OryxSayCommand : Command
     {
-        public OryxSayCommand() : base("oryxSay", reqAdmin: true, alias: "osay") { }
+        public OryxSayCommand() : base("oryxSay", 90, alias: "osay") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -651,7 +733,7 @@ namespace wServer.realm.commands
 
     class AnnounceCommand : Command
     {
-        public AnnounceCommand() : base("announce", reqAdmin: true) { }
+        public AnnounceCommand() : base("announce", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -662,7 +744,7 @@ namespace wServer.realm.commands
 
     class SummonCommand : Command
     {
-        public SummonCommand() : base("summon", reqAdmin: true) { }
+        public SummonCommand() : base("summon", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -684,7 +766,7 @@ namespace wServer.realm.commands
 
     class SummonAllCommand : Command
     {
-        public SummonAllCommand() : base("summonall", reqAdmin: true) { }
+        public SummonAllCommand() : base("summonall", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -701,7 +783,7 @@ namespace wServer.realm.commands
 
     class KillPlayerCommand : Command
     {
-        public KillPlayerCommand() : base("killPlayer", reqAdmin: true) { }
+        public KillPlayerCommand() : base("killPlayer", 100) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -722,7 +804,7 @@ namespace wServer.realm.commands
 
     class SizeCommand : Command
     {
-        public SizeCommand() : base("size", reqAdmin: true) { }
+        public SizeCommand() : base("size", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -735,6 +817,16 @@ namespace wServer.realm.commands
             var size = Utils.GetInt(args);
             var min = 0;
             var max = 500;
+            if (player.Rank < 80)
+            {
+                min = 75;
+                max = 125;
+            }
+            else if (player.Rank < 90)
+            {
+                min = 50;
+                max = 200;
+            }
             if (size < min && size != 0 || size > max)
             {
                 player.SendError($"Invalid size. Size needs to be within the range: {min}-{max}. Use 0 to reset size to default.");
@@ -757,7 +849,7 @@ namespace wServer.realm.commands
         // An external program is used to monitor the world server existance.
         // If !exist it automatically restarts it.
 
-        public RebootCommand() : base("reboot", reqAdmin: true) { }
+        public RebootCommand() : base("reboot", 100) { }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -838,7 +930,7 @@ namespace wServer.realm.commands
 
     class ReSkinCommand : Command
     {
-        public ReSkinCommand() : base("reskin", reqAdmin: true) { }
+        public ReSkinCommand() : base("reskin", 40) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -874,10 +966,16 @@ namespace wServer.realm.commands
 
     class MaxCommand : Command
     {
-        public MaxCommand() : base("max", reqAdmin: true) { }
+        public MaxCommand() : base("max", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
+            if ((player.Rank < 80 && !(player.Owner is Test)))
+            {
+                player.SendError("Forbidden.");
+                return false;
+            }
+
             var pd = player.Manager.Resources.GameData.Classes[player.ObjectType];
 
             player.Stats.Base[0] = pd.Stats[0].MaxValue;
@@ -896,7 +994,7 @@ namespace wServer.realm.commands
 
     class TpQuestCommand : Command
     {
-        public TpQuestCommand() : base("tq", reqAdmin: true) { }
+        public TpQuestCommand() : base("tq", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -919,7 +1017,7 @@ namespace wServer.realm.commands
 
         private readonly RealmManager _manager;
 
-        public MuteCommand(RealmManager manager) : base("mute", reqAdmin: true)
+        public MuteCommand(RealmManager manager) : base("mute", 80)
         {
             _manager = manager;
             _manager.DbEvents.Expired += HandleUnMute;
@@ -1019,7 +1117,7 @@ namespace wServer.realm.commands
 
     class UnMuteCommand : Command
     {
-        public UnMuteCommand() : base("unmute", reqAdmin: true) { }
+        public UnMuteCommand() : base("unmute", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -1072,7 +1170,7 @@ namespace wServer.realm.commands
 
     class BanAccountCommand : Command
     {
-        public BanAccountCommand() : base("ban", reqAdmin: true) { }
+        public BanAccountCommand() : base("ban", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1145,7 +1243,7 @@ namespace wServer.realm.commands
 
     class BanIPCommand : Command
     {
-        public BanIPCommand() : base("banip", reqAdmin: true, alias: "ipban") { }
+        public BanIPCommand() : base("banip", 80, alias: "ipban") { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1215,7 +1313,7 @@ namespace wServer.realm.commands
 
     class UnBanAccountCommand : Command
     {
-        public UnBanAccountCommand() : base("unban", reqAdmin: true) { }
+        public UnBanAccountCommand() : base("unban", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1271,7 +1369,7 @@ namespace wServer.realm.commands
 
     class ClearInvCommand : Command
     {
-        public ClearInvCommand() : base("clearinv", reqAdmin: true) { }
+        public ClearInvCommand() : base("clearinv", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1284,7 +1382,7 @@ namespace wServer.realm.commands
 
     class CloseRealmCommand : Command
     {
-        public CloseRealmCommand() : base("closerealm", reqAdmin: true) { }
+        public CloseRealmCommand() : base("closerealm", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1309,7 +1407,7 @@ namespace wServer.realm.commands
 
     class QuakeCommand : Command
     {
-        public QuakeCommand() : base("quake", reqAdmin: true) { }
+        public QuakeCommand() : base("quake", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string worldName)
         {
@@ -1323,7 +1421,7 @@ namespace wServer.realm.commands
                 return false;
             }
 
-            if (player.Owner is Nexus)
+            if (player.Owner is Nexus && player.Rank < 100)
             {
                 player.SendError("Cannot use /quake in Nexus.");
                 return false;
@@ -1356,7 +1454,7 @@ namespace wServer.realm.commands
 
     class MusicCommand : Command
     {
-        public MusicCommand() : base("music", reqAdmin: true) { }
+        public MusicCommand() : base("music", 30) { }
 
         protected override bool Process(Player player, RealmTime time, string music)
         {
@@ -1375,6 +1473,12 @@ namespace wServer.realm.commands
             if (properName == null)
             {
                 player.SendError($"Music \"{music}\" not found!");
+                return false;
+            }
+
+            if (!(player.Owner is Test) && player.Rank < 80)
+            {
+                player.SendError("Forbidden.");
                 return false;
             }
 
@@ -1405,7 +1509,7 @@ namespace wServer.realm.commands
 
     class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", reqAdmin: true) { }
+        public VisitCommand() : base("visit", 80) { }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -1438,7 +1542,7 @@ namespace wServer.realm.commands
 
     class LinkCommand : Command
     {
-        public LinkCommand() : base("link", reqAdmin: true) { }
+        public LinkCommand() : base("link", 40) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1446,11 +1550,12 @@ namespace wServer.realm.commands
                 return false;
 
             var world = player.Owner;
-            if (world.Id < 0 || (!player.Client.Account.Admin && !(world is Test)))
+            if (world.Id < 0 || (player.Rank < 90 && !(world is Test)))
             {
                 player.SendError("Forbidden.");
                 return false;
             }
+
 
             if (!player.Manager.Monitor.AddPortal(world.Id))
             {
@@ -1464,7 +1569,7 @@ namespace wServer.realm.commands
 
     class UnLinkCommand : Command
     {
-        public UnLinkCommand() : base("unlink", reqAdmin: true) { }
+        public UnLinkCommand() : base("unlink", 40) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1472,7 +1577,7 @@ namespace wServer.realm.commands
                 return false;
 
             var world = player.Owner;
-            if (world.Id < 0 || (!player.Client.Account.Admin && !(world is Test)))
+            if (world.Id < 0 || (player.Rank < 90 && !(world is Test)))
             {
                 player.SendError("Forbidden.");
                 return false;
@@ -1487,27 +1592,37 @@ namespace wServer.realm.commands
         }
     }
 
-    class Level20Command : Command
+    internal class Level20Command : Command
     {
-        public Level20Command() : base("level20", reqAdmin: true, alias: "l20") { }
+        public Level20Command(RealmManager manager) : base("level20", permLevel: 10, alias: "l20")
+        {
+            _manager = manager;
+        }
+
+        private readonly RealmManager _manager;
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
             if (player.Level < 20)
             {
-                player.Experience = Player.GetLevelExp(20);
+                var statInfo = _manager.Resources.GameData.Classes[player.ObjectType].Stats;
+                for (var v = 0; v < statInfo.Length; v++)
+                {
+                    player.Stats.Base[v] +=
+                    (statInfo[v].MaxIncrease + statInfo[v].MinIncrease) * (20 - player.Level) / 2;
+                    if (player.Stats.Base[v] > statInfo[v].MaxValue)
+                        player.Stats.Base[v] = statInfo[v].MaxValue;
+                }
                 player.Level = 20;
-                player.CalculateFame();
                 return true;
             }
-
             return false;
         }
     }
 
     class RenameCommand : Command
     {
-        public RenameCommand() : base("rename", reqAdmin: true) { }
+        public RenameCommand() : base("rename", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1577,7 +1692,7 @@ namespace wServer.realm.commands
 
     class UnnameCommand : Command
     {
-        public UnnameCommand() : base("unname", reqAdmin: true) { }
+        public UnnameCommand() : base("unname", 90) { }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1632,7 +1747,7 @@ namespace wServer.realm.commands
 
     class CompactLOHCommand : Command
     {
-        public CompactLOHCommand() : base("compactLOH", reqAdmin: true, listCommand: false) { }
+        public CompactLOHCommand() : base("compactLOH", 100, listCommand: false) { }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -1641,4 +1756,5 @@ namespace wServer.realm.commands
             return true;
         }
     }
+*/
 }

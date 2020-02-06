@@ -163,6 +163,13 @@ namespace wServer.realm.entities
             set { _oxygenBar.SetValue(value); }
         }
 
+        private readonly SV<int> _admin;
+        public int Admin
+        {
+            get { return _admin.GetValue(); }
+            set { _admin.SetValue(value); }
+        }
+
         public int PetId { get; set; }
         public Pet Pet { get; set; }
         public int? GuildInvite { get; set; }
@@ -239,6 +246,7 @@ namespace wServer.realm.entities
             stats[StatsType.MagicStackCount] = MagicPots.Count;
             stats[StatsType.HasBackpack] = (HasBackpack) ? 1 : 0;
             stats[StatsType.OxygenBar] = OxygenBar;
+            stats[StatsType.Admin] = Admin;
         }
 
         public void SaveToCharacter()
@@ -293,6 +301,7 @@ namespace wServer.realm.entities
             _mp = new SV<int>(this, StatsType.MP, client.Character.MP);
             _hasBackpack = new SV<bool>(this, StatsType.HasBackpack, client.Character.HasBackpack, true);
             _oxygenBar = new SV<int>(this, StatsType.OxygenBar, -1, true);
+            _admin = new SV<int>(this, StatsType.Admin, client.Account.Admin ? 1 : 0);
 
             Name = client.Account.Name;
             HP = client.Character.HP;
@@ -376,7 +385,7 @@ namespace wServer.realm.entities
             ExperienceGoal = GetExpGoal(_client.Character.Level);
             Stars = GetStars();
 
-            if (owner.Name.Equals("OceanTrench"))
+            if (owner.Name.Equals("Ocean Trench"))
                 OxygenBar = 100;
 
             SetNewbiePeriod();
@@ -710,9 +719,46 @@ namespace wServer.realm.entities
                 "{0} died at level {1}, killed by {2}",
                 Name, Level, killer);
 
-            foreach (var i in Owner.Players.Values)
+            // notable deaths
+            if ((maxed >= 6 || Fame >= 1000) && !Client.Account.Admin)
             {
-                i.SendInfo(deathMessage);
+                foreach (var w in Manager.Worlds.Values)
+                    foreach (var p in w.Players.Values)
+                        p.SendHelp(deathMessage);
+                return;
+            }
+
+            var pGuild = Client.Account.GuildId;
+
+            // guild case, only for level 20
+            if (pGuild > 0 && Level == 20)
+            {
+                foreach (var w in Manager.Worlds.Values)
+                {
+                    foreach (var p in w.Players.Values)
+                    {
+                        if (p.Client.Account.GuildId == pGuild)
+                        {
+                            p.SendGuildDeath(deathMessage);
+                        }
+                    }
+                }
+
+                foreach (var i in Owner.Players.Values)
+                {
+                    if (i.Client.Account.GuildId != pGuild)
+                    {
+                        i.SendInfo(deathMessage);
+                    }
+                }
+            }
+            // guild less case
+            else
+            {
+                foreach (var i in Owner.Players.Values)
+                {
+                    i.SendInfo(deathMessage);
+                }
             }
         }
 
