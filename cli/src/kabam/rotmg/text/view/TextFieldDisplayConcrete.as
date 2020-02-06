@@ -40,102 +40,102 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
     private var leading:int = 0;
 
 
-    private static function getOnlyTextHeight(_arg1:TextLineMetrics):Number {
-        return ((_arg1.height - _arg1.leading));
+    private static function getOnlyTextHeight(textLineMetrics:TextLineMetrics):Number {
+        return ((textLineMetrics.height - textLineMetrics.leading));
     }
 
 
-    public function setIndent(_arg1:int):TextFieldDisplayConcrete {
-        this.indent = _arg1;
+    public function setIndent(val:int):TextFieldDisplayConcrete {
+        this.indent = val;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setLeading(_arg1:int):TextFieldDisplayConcrete {
-        this.leading = _arg1;
+    public function setLeading(val:int):TextFieldDisplayConcrete {
+        this.leading = val;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setLeftMargin(_arg1:int):TextFieldDisplayConcrete {
-        this.leftMargin = _arg1;
+    public function setLeftMargin(val:int):TextFieldDisplayConcrete {
+        this.leftMargin = val;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setDisplayAsPassword(_arg1:Boolean):TextFieldDisplayConcrete {
-        this.displayAsPassword = _arg1;
+    public function setDisplayAsPassword(display:Boolean):TextFieldDisplayConcrete {
+        this.displayAsPassword = display;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setDebugName(_arg1:String):TextFieldDisplayConcrete {
-        this.debugName = _arg1;
+    public function setDebugName(val:String):TextFieldDisplayConcrete {
+        this.debugName = val;
         ((this.textField) && ((this.textField.name = this.debugName)));
         return (this);
     }
 
-    public function setSize(_arg1:int):TextFieldDisplayConcrete {
-        this.size = _arg1;
+    public function setSize(val:int):TextFieldDisplayConcrete {
+        this.size = val;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setColor(_arg1:uint):TextFieldDisplayConcrete {
-        this.color = _arg1;
+    public function setColor(color:uint):TextFieldDisplayConcrete {
+        this.color = color;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setBold(_arg1:Boolean):TextFieldDisplayConcrete {
-        this.bold = _arg1;
+    public function setBold(bold:Boolean):TextFieldDisplayConcrete {
+        this.bold = bold;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setHorizontalAlign(_arg1:String):TextFieldDisplayConcrete {
-        this.horizontalAlign = _arg1;
+    public function setHorizontalAlign(text:String):TextFieldDisplayConcrete {
+        this.horizontalAlign = text;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setAutoSize(_arg1:String):TextFieldDisplayConcrete {
-        this.autoSize = _arg1;
+    public function setAutoSize(size:String):TextFieldDisplayConcrete {
+        this.autoSize = size;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setMultiLine(_arg1:Boolean):TextFieldDisplayConcrete {
-        this.multiline = _arg1;
+    public function setMultiLine(multiLine:Boolean):TextFieldDisplayConcrete {
+        this.multiline = multiLine;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setWordWrap(_arg1:Boolean):TextFieldDisplayConcrete {
-        this.wordWrap = _arg1;
+    public function setWordWrap(wordWrap:Boolean):TextFieldDisplayConcrete {
+        this.wordWrap = wordWrap;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setTextWidth(_arg1:Number):TextFieldDisplayConcrete {
-        this.textWidth = _arg1;
+    public function setTextWidth(width:Number):TextFieldDisplayConcrete {
+        this.textWidth = width;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setTextHeight(_arg1:Number):TextFieldDisplayConcrete {
-        this.textHeight = _arg1;
+    public function setTextHeight(height:Number):TextFieldDisplayConcrete {
+        this.textHeight = height;
         this.setPropertiesIfHasTextField();
         return (this);
     }
 
-    public function setHTML(_arg1:Boolean):TextFieldDisplayConcrete {
-        this.html = _arg1;
+    public function setHTML(HTML:Boolean):TextFieldDisplayConcrete {
+        this.html = HTML;
         return (this);
     }
 
-    public function setStringBuilder(_arg1:StringBuilder):TextFieldDisplayConcrete {
-        this.stringBuilder = _arg1;
+    public function setStringBuilder(stringBuilder:StringBuilder):TextFieldDisplayConcrete {
+        this.stringBuilder = stringBuilder;
         this.setTextIfAble();
         return (this);
     }
@@ -144,14 +144,14 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
         return (this.stringBuilder);
     }
 
-    public function setPosition(_arg1:Number, _arg2:Number):TextFieldDisplayConcrete {
-        this.x = _arg1;
-        this.y = _arg2;
+    public function setPosition(xPos:Number, yPos:Number):TextFieldDisplayConcrete {
+        this.x = xPos;
+        this.y = yPos;
         return (this);
     }
 
-    public function setVerticalAlign(_arg1:String):TextFieldDisplayConcrete {
-        this.verticalAlign = _arg1;
+    public function setVerticalAlign(verticalAllign:String):TextFieldDisplayConcrete {
+        this.verticalAlign = verticalAllign;
         return (this);
     }
 
@@ -159,21 +159,21 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
         this.setTextIfAble();
     }
 
-    public function setFont(_arg1:FontInfo):void {
-        this.font = _arg1;
+    public function setFont(font:FontInfo):void {
+        this.font = font;
     }
 
-    public function setStringMap(_arg1:StringMap):void {
-        this.stringMap = _arg1;
+    public function setStringMap(stringMap:StringMap):void {
+        this.stringMap = stringMap;
         this.setTextIfAble();
     }
 
-    public function setTextField(_arg1:TextField):void {
-        _arg1.width = this.textWidth;
-        _arg1.height = this.textHeight;
-        ((this.debugName) && ((_arg1.name = this.debugName)));
-        this.updateTextOfInjectedTextField(_arg1);
-        this.textField = _arg1;
+    public function setTextField(textField:TextField):void {
+        textField.width = this.textWidth;
+        textField.height = this.textHeight;
+        ((this.debugName) && ((textField.name = this.debugName)));
+        this.updateTextOfInjectedTextField(textField);
+        this.textField = textField;
         this.setProperties();
         addChild(this.textField);
     }
@@ -206,30 +206,30 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
     }
 
     private function setFormatProperties():void {
-        var _local1:TextFormat = new TextFormat();
-        _local1.size = this.size;
-        _local1.font = this.font.getName();
-        _local1.bold = this.bold;
-        _local1.align = this.horizontalAlign;
-        _local1.leftMargin = this.leftMargin;
-        _local1.indent = this.indent;
-        _local1.leading = this.leading;
-        this.setTextFormat(_local1);
+        var textFormat:TextFormat = new TextFormat();
+        textFormat.size = this.size;
+        textFormat.font = this.font.getName();
+        textFormat.bold = this.bold;
+        textFormat.align = this.horizontalAlign;
+        textFormat.leftMargin = this.leftMargin;
+        textFormat.indent = this.indent;
+        textFormat.leading = this.leading;
+        this.setTextFormat(textFormat);
     }
 
-    private function updateTextOfInjectedTextField(_arg1:TextField):void {
+    private function updateTextOfInjectedTextField(textField:TextField):void {
         if (this.textField) {
-            _arg1.text = this.textField.text;
+            textField.text = this.textField.text;
             removeChild(this.textField);
         }
     }
 
     private function setTextIfAble():void {
-        var _local1:String;
+        var text:String;
         if (this.isAble()) {
             this.stringBuilder.setStringMap(this.stringMap);
-            _local1 = this.stringBuilder.getString();
-            this.setText(_local1);
+            text = this.stringBuilder.getString();
+            this.setText(text);
             this.alignVertically();
             this.invalidateTextField();
             this.textChanged.dispatch();
@@ -240,24 +240,24 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
         this.textField.height;
     }
 
-    public function setText(_arg1:String):void {
+    public function setText(text:String):void {
         if (this.html) {
-            this.textField.htmlText = _arg1;
+            this.textField.htmlText = text;
         }
         else {
-            this.textField.text = _arg1;
+            this.textField.text = text;
         }
     }
 
     private function alignVertically():void {
-        var _local1:TextLineMetrics;
+        var textLineMetrics:TextLineMetrics;
         if (this.verticalAlign == MIDDLE) {
             this.setYToMiddle();
         }
         else {
             if (this.verticalAlign == BOTTOM) {
-                _local1 = this.textField.getLineMetrics(0);
-                this.textField.y = -(getOnlyTextHeight(_local1));
+                textLineMetrics = this.textField.getLineMetrics(0);
+                this.textField.y = -(getOnlyTextHeight(textLineMetrics));
             }
         }
     }
@@ -268,23 +268,23 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
 
     private function setYToMiddle():void {
         this.textField.height;
-        var _local1:TextFormat = this.textField.getTextFormat();
-        var _local2:Number = this.getSpecificXHeight(_local1);
-        var _local3:Number = this.getSpecificVerticalSpace(_local1);
-        this.textField.y = -((this.textField.height - (((_local2 / 2) + _local3) + GUTTER)));
+        var textFormat:TextFormat = this.textField.getTextFormat();
+        var height:Number = this.getSpecificXHeight(textFormat);
+        var verticalSpace:Number = this.getSpecificVerticalSpace(textFormat);
+        this.textField.y = -((this.textField.height - (((height / 2) + verticalSpace) + GUTTER)));
     }
 
-    private function getSpecificXHeight(_arg1:TextFormat):Number {
-        return (this.font.getXHeight(Number(_arg1.size)));
+    private function getSpecificXHeight(textFormat:TextFormat):Number {
+        return (this.font.getXHeight(Number(textFormat.size)));
     }
 
-    private function getSpecificVerticalSpace(_arg1:TextFormat):Number {
-        return (this.font.getVerticalSpace(Number(_arg1.size)));
+    private function getSpecificVerticalSpace(textFormat:TextFormat):Number {
+        return (this.font.getVerticalSpace(Number(textFormat.size)));
     }
 
-    public function setTextFormat(_arg1:TextFormat, _arg2:int = -1, _arg3:int = -1):void {
-        this.textField.defaultTextFormat = _arg1;
-        this.textField.setTextFormat(_arg1, _arg2, _arg3);
+    public function setTextFormat(textFormat:TextFormat, val1:int = -1, val2:int = -1):void {
+        this.textField.defaultTextFormat = textFormat;
+        this.textField.setTextFormat(textFormat, val1, val2);
     }
 
     private function isAble():Boolean {
@@ -319,8 +319,8 @@ public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay
         return (!((this.font == null)));
     }
 
-    public function getTextFormat(_arg1:int = -1, _arg2:int = -1):TextFormat {
-        return (this.textField.getTextFormat(_arg1, _arg2));
+    public function getTextFormat(val1:int = -1, val2:int = -1):TextFormat {
+        return (this.textField.getTextFormat(val1, val2));
     }
 
 

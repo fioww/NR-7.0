@@ -6,11 +6,11 @@ import kabam.rotmg.text.model.FontInfo;
 
 public interface TextFieldDisplay {
 
-    function setTextField(_arg1:TextField):void;
+    function setTextField(textField:TextField):void;
 
-    function setStringMap(_arg1:StringMap):void;
+    function setStringMap(stringMap:StringMap):void;
 
-    function setFont(_arg1:FontInfo):void;
+    function setFont(fontInfo:FontInfo):void;
 
 }
 }

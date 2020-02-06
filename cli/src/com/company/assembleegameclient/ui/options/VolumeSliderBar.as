@@ -22,12 +22,12 @@ public class VolumeSliderBar extends Sprite {
     private var _mousePoint:Point;
     private var _localPoint:Point;
 
-    public function VolumeSliderBar(_arg1:Number, _arg2:Number = 0xFFFFFF) {
+    public function VolumeSliderBar(currentVolume:Number, color:Number = 0xFFFFFF) {
         this._mousePoint = new Point(0, 0);
         this._localPoint = new Point(0, 0);
         super();
         this.init();
-        this.currentVolume = _arg1;
+        this.currentVolume = currentVolume;
         this.draw(0x9B9B9B);
         this._isMouseDown = false;
         this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -53,15 +53,15 @@ public class VolumeSliderBar extends Sprite {
         return (this._currentVolume);
     }
 
-    public function set currentVolume(_arg1:Number):void {
-        _arg1 = (((_arg1) > this.MAX) ? this.MAX : (((_arg1) < this.MIN) ? this.MIN : _arg1));
-        this._currentVolume = _arg1;
+    public function set currentVolume(volume:Number):void {
+        volume = (((volume) > this.MAX) ? this.MAX : (((volume) < this.MIN) ? this.MIN : volume));
+        this._currentVolume = volume;
         this.draw();
     }
 
-    private function draw(_arg1:uint = 0x9B9B9B):void {
-        var _local2:* = (this._currentVolume * 100);
-        var _local3:Number = (_local2 * -0.2);
+    private function draw(color:uint = 0x9B9B9B):void {
+        var vol:* = (this._currentVolume * 100);
+        var trueVol:Number = (vol * -0.2);
         this.bar.graphics.clear();
         this.bar.graphics.lineStyle(2, 0x9B9B9B);
         this.bar.graphics.moveTo(0, 0);
@@ -69,18 +69,18 @@ public class VolumeSliderBar extends Sprite {
         this.bar.graphics.lineTo(100, -20);
         this.bar.graphics.lineTo(100, 0);
         this.bar.graphics.lineTo(0, 0);
-        this.bar.graphics.beginFill(_arg1, 0.8);
+        this.bar.graphics.beginFill(color, 0.8);
         this.bar.graphics.moveTo(0, 0);
         this.bar.graphics.lineTo(0, -1);
-        this.bar.graphics.lineTo(_local2, _local3);
-        this.bar.graphics.lineTo(_local2, 0);
+        this.bar.graphics.lineTo(vol, trueVol);
+        this.bar.graphics.lineTo(vol, 0);
         this.bar.graphics.lineTo(0, 0);
         this.bar.graphics.endFill();
     }
 
-    private function onMouseDown(_arg1:MouseEvent):void {
+    private function onMouseDown(mouse:MouseEvent):void {
         this._isMouseDown = true;
-        this.currentVolume = (_arg1.localX / 100);
+        this.currentVolume = (mouse.localX / 100);
         dispatchEvent(new Event(Event.CHANGE, true));
         if (stage) {
             stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
@@ -88,18 +88,18 @@ public class VolumeSliderBar extends Sprite {
         }
     }
 
-    private function onMouseUp(_arg1:MouseEvent):void {
+    private function onMouseUp(mouse:MouseEvent):void {
         this._isMouseDown = false;
         if (stage) {
             stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
         }
     }
 
-    private function onMouseMove(_arg1:MouseEvent):void {
+    private function onMouseMove(mouse:MouseEvent):void {
         if (!this._isMouseDown) {
             return;
         }
-        this._mousePoint.x = _arg1.currentTarget.mouseX;
+        this._mousePoint.x = mouse.currentTarget.mouseX;
         this._localPoint = this.globalToLocal(this._mousePoint);
         this.currentVolume = (this._localPoint.x / 100);
         dispatchEvent(new Event(Event.CHANGE, true));

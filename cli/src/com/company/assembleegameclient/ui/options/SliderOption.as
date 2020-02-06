@@ -9,17 +9,17 @@ public class SliderOption extends Option {
     private var disabled_:Boolean;
     private var callbackFunc:Function;
 
-    public function SliderOption(_arg1:String, _arg2:Function = null, _arg3:Boolean = false) {
-        super(_arg1, "", "");
+    public function SliderOption(text:String, func:Function = null, enabled:Boolean = false) {
+        super(text, "", "");
         this.sliderBar = new VolumeSliderBar(Parameters.data_[paramName_]);
         this.sliderBar.addEventListener(Event.CHANGE, this.onChange);
-        this.callbackFunc = _arg2;
+        this.callbackFunc = func;
         addChild(this.sliderBar);
-        this.setDisabled(_arg3);
+        this.setDisabled(enabled);
     }
 
-    public function setDisabled(_arg1:Boolean):void {
-        this.disabled_ = _arg1;
+    public function setDisabled(enabled:Boolean):void {
+        this.disabled_ = enabled;
         mouseEnabled = !(this.disabled_);
         mouseChildren = !(this.disabled_);
     }
@@ -28,7 +28,7 @@ public class SliderOption extends Option {
         this.sliderBar.currentVolume = Parameters.data_[paramName_];
     }
 
-    private function onChange(_arg1:Event):void {
+    private function onChange(evt:Event):void {
         Parameters.data_[paramName_] = this.sliderBar.currentVolume;
         if (this.callbackFunc != null) {
             this.callbackFunc(this.sliderBar.currentVolume);

@@ -12,16 +12,16 @@ public class SFX {
         sfxTrans_ = new SoundTransform(((Parameters.data_.playSFX) ? 1 : 0));
     }
 
-    public static function setPlaySFX(_arg1:Boolean):void {
-        Parameters.data_.playSFX = _arg1;
+    public static function setPlaySFX(playSFX:Boolean):void {
+        Parameters.data_.playSFX = playSFX;
         Parameters.save();
         SoundEffectLibrary.updateTransform();
     }
 
-    public static function setSFXVolume(_arg1:Number):void {
-        Parameters.data_.SFXVolume = _arg1;
+    public static function setSFXVolume(SFXVolume:Number):void {
+        Parameters.data_.SFXVolume = SFXVolume;
         Parameters.save();
-        SoundEffectLibrary.updateVolume(_arg1);
+        SoundEffectLibrary.updateVolume(SFXVolume);
     }
 
 

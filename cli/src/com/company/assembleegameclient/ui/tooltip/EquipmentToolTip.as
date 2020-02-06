@@ -135,7 +135,8 @@ package com.company.assembleegameclient.ui.tooltip
          this.icon_ = new Bitmap(texture);
          addChild(this.icon_);
       }
-      
+
+      //Set tier
       private function addTierText() : void
       {
          this.tierText_ = new SimpleText(16,16777215,false,30,0);
@@ -157,14 +158,16 @@ package com.company.assembleegameclient.ui.tooltip
             addChild(this.tierText_);
          }
       }
-      
+
+      //Permapets
       private function isPet() : Boolean
       {
          var activateTags:XMLList = null;
          activateTags = this.objectXML_.Activate.(text() == "PermaPet");
          return activateTags.length() >= 1;
       }
-      
+
+      //Title, where the name, tier and image belong
       private function addTitle() : void
       {
          var color:int = this.playerCanUse || this.player_ == null?int(16777215):int(16549442);
@@ -178,7 +181,8 @@ package com.company.assembleegameclient.ui.tooltip
          this.titleText_.y = this.icon_.height / 2 - this.titleText_.actualHeight_ / 2;
          addChild(this.titleText_);
       }
-      
+
+      //ExtraToolTipData (check ninja stars as an example)
       private function buildUniqueTooltipData() : String
       {
          var effectDataList:XMLList = null;
@@ -196,7 +200,8 @@ package com.company.assembleegameclient.ui.tooltip
          }
          return "";
       }
-      
+
+      //More on ExtraToolTipData or effects
       private function makeEffectsList() : void
       {
          this.yOffset = this.descText_.y + this.descText_.height + 8;
@@ -217,7 +222,8 @@ package com.company.assembleegameclient.ui.tooltip
             this.yOffset = this.effectsText_.y + this.effectsText_.height + 8;
          }
       }
-      
+
+      //NumProjectiles
       private function addNumProjectilesTagsToEffectsList() : void
       {
          if(this.objectXML_.hasOwnProperty("NumProjectiles") && this.comparisonResults.processedTags.hasOwnProperty(this.objectXML_.NumProjectiles.toXMLString()) != true)
@@ -225,7 +231,8 @@ package com.company.assembleegameclient.ui.tooltip
             this.effects.push(new Effect("Shots",this.objectXML_.NumProjectiles));
          }
       }
-      
+
+      //FameBonus
       private function addFameBonusTagToEffectsList() : void
       {
          var fameBonus:int = 0;
@@ -245,7 +252,11 @@ package com.company.assembleegameclient.ui.tooltip
             this.effects.push(new Effect("Fame Bonus",TooltipHelper.wrapInFontTag(text,textColor)));
          }
       }
-      
+
+      //MpCost, with MpEndCost for ninjas and MpCost as regular
+      //
+      //MpEndCost takes effect after you get off the space bar;
+      //MpCost takes effect when you press the space bar, only once
       private function addMpCostTagToEffectsList() : void
       {
          if(this.objectXML_.hasOwnProperty("MpEndCost"))
@@ -263,7 +274,8 @@ package com.company.assembleegameclient.ui.tooltip
             }
          }
       }
-      
+
+      //Doses, for Elixirs of Health, as an example
       private function addDoseTagsToEffectsList() : void
       {
          if(this.objectXML_.hasOwnProperty("Doses"))
@@ -271,7 +283,8 @@ package com.company.assembleegameclient.ui.tooltip
             this.effects.push(new Effect("Doses",this.objectXML_.Doses));
          }
       }
-      
+
+      //Projectile effects
       private function addProjectileTagsToEffectsList() : void
       {
          var projXML:XML = null;
@@ -304,7 +317,8 @@ package com.company.assembleegameclient.ui.tooltip
             }
          }
       }
-      
+
+      //Tags for Effects
       private function addActivateTagsToEffectsList() : void
       {
          var activateXML:XML = null;
@@ -398,7 +412,8 @@ package com.company.assembleegameclient.ui.tooltip
          }
          return string;
       }
-      
+
+      //OnEquip boosts on stats
       private function addActivateOnEquipTagsToEffectsList() : void
       {
          var activateXML:XML = null;
@@ -422,7 +437,8 @@ package com.company.assembleegameclient.ui.tooltip
             }
          }
       }
-      
+
+      //Comparing stats, if worse it's shown as red
       private function compareIncrementStat(activateXML:XML) : String
       {
          var amountString:String = null;
@@ -453,7 +469,8 @@ package com.company.assembleegameclient.ui.tooltip
          }
          return TooltipHelper.wrapInFontTag(amountString + " " + StatData.statToName(stat),textColor);
       }
-      
+
+      //Equipment Restrictions
       private function addEquipmentItemRestrictions() : void
       {
          this.restrictions.push(new Restriction("Must be equipped to use",11776947,false));
@@ -471,7 +488,8 @@ package com.company.assembleegameclient.ui.tooltip
       {
          this.restrictions.push(new Restriction("Press [" + KeyCodes.CharCodeStrings[Parameters.data_.useSpecial] + "] in world to use",16777215,false));
       }
-      
+
+      //Consumables
       private function addConsumableItemRestrictions() : void
       {
          this.restrictions.push(new Restriction("Consumed with use",11776947,false));
@@ -484,13 +502,15 @@ package com.company.assembleegameclient.ui.tooltip
             this.restrictions.push(new Restriction("Double-Click to take & Shift-Click to use",16777215,false));
          }
       }
-      
+
+      //Multi use items, like pet generators
       private function addReusableItemRestrictions() : void
       {
          this.restrictions.push(new Restriction("Can be used multiple times",11776947,false));
          this.restrictions.push(new Restriction("Double-Click or Shift-Click on item to use",16777215,false));
       }
-      
+
+      //Cannot use if... :
       private function makeRestrictionList() : void
       {
          var reqXML:XML = null;
@@ -569,7 +589,8 @@ package com.company.assembleegameclient.ui.tooltip
             addChild(this.restrictionsText_);
          }
       }
-      
+
+      //Description
       private function addDescriptionText() : void
       {
          this.descText_ = new SimpleText(14,11776947,false,MAX_WIDTH,0);
