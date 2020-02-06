@@ -1,7 +1,9 @@
 package com.company.assembleegameclient.appengine
 {
    import com.company.assembleegameclient.objects.ObjectLibrary;
-   import flash.events.Event;
+import com.company.assembleegameclient.objects.Player;
+
+import flash.events.Event;
    import kabam.rotmg.account.core.Account;
    import kabam.rotmg.core.StaticInjectorContext;
    import kabam.rotmg.servers.api.LatLong;
@@ -94,6 +96,7 @@ package com.company.assembleegameclient.appengine
          this.name_ = accountXML.Name;
          this.nameChosen_ = accountXML.hasOwnProperty("NameChosen");
          this.isAdmin_ = accountXML.hasOwnProperty("Admin");
+         Player.isAdmin = this.isAdmin_;
          this.totalFame_ = int(accountXML.Stats.TotalFame);
          this.fame_ = int(accountXML.Stats.Fame);
          this.credits_ = int(accountXML.Credits);

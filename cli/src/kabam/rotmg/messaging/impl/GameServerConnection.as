@@ -1564,6 +1564,9 @@ package kabam.rotmg.messaging.impl
                   index = stat.statType_ - StatData.BACKPACK_0_STAT + GeneralConstants.NUM_EQUIPMENT_SLOTS + GeneralConstants.NUM_INVENTORY_SLOTS;
                   (go as Player).equipment_[index] = value;
                   continue;
+               case StatData.ADMIN:
+                  player.admin_ = value == 1 ? true : false;
+                  continue;
                default:
                   trace("unhandled stat: " + stat.statType_);
                   continue;
@@ -1669,7 +1672,7 @@ package kabam.rotmg.messaging.impl
                this.addSpeechBalloon.dispatch(speechBalloonvo);
             }
          }
-         this.addTextLine.dispatch(new AddTextLineVO(text.name_,textString,text.objectId_,text.numStars_,text.recipient_));
+         this.addTextLine.dispatch(new AddTextLineVO(text.name_,textString,text.objectId_,text.numStars_,text.admin_,text.recipient_));
       }
       
       private function onInvResult(invResult:InvResult) : void

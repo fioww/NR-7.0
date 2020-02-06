@@ -22,6 +22,8 @@ package com.company.assembleegameclient.util
       private static const orangeCT:ColorTransform = new ColorTransform(247 / 255,147 / 255,30 / 255);
       
       private static const yellowCT:ColorTransform = new ColorTransform(255 / 255,255 / 255,0 / 255);
+
+      private static const greenCT:ColorTransform = new ColorTransform(0 / 255, 255 / 255, 0 / 255);
       
       public static const COLORS:Vector.<ColorTransform> = new <ColorTransform>[lightBlueCT,darkBlueCT,redCT,orangeCT,yellowCT];
        
@@ -59,18 +61,25 @@ package com.company.assembleegameclient.util
          return -1;
       }
       
-      public static function numStarsToBigImage(numStars:int) : Sprite
+      public static function numStarsToBigImage(numStars:int, isAdmin:Boolean = false) : Sprite
       {
-         var star:Sprite = numStarsToImage(numStars);
+         var star:Sprite = numStarsToImage(numStars, isAdmin);
          star.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
          star.scaleX = 1.4;
          star.scaleY = 1.4;
          return star;
       }
       
-      public static function numStarsToImage(numStars:int) : Sprite
+      public static function numStarsToImage(numStars:int, isAdmin:Boolean) : Sprite
       {
          var star:Sprite = new StarGraphic();
+
+         if (isAdmin)
+         {
+            star.transform.colorTransform = greenCT;
+            return star;
+         }
+
          if(numStars < ObjectLibrary.playerChars_.length)
          {
             star.transform.colorTransform = lightBlueCT;
@@ -94,10 +103,10 @@ package com.company.assembleegameclient.util
          return star;
       }
       
-      public static function numStarsToIcon(numStars:int) : Sprite
+      public static function numStarsToIcon(numStars:int, isAdmin:Boolean) : Sprite
       {
          var star:Sprite = null;
-         star = numStarsToImage(numStars);
+         star = numStarsToImage(numStars,isAdmin);
          var sprite:Sprite = new Sprite();
          sprite.graphics.beginFill(0,0.4);
          var w:int = star.width / 2 + 2;

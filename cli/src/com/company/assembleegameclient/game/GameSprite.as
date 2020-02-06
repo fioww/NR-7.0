@@ -305,7 +305,7 @@ import kabam.rotmg.ui.UIUtils;
             this.drawCharacterWindow.dispatch(player);
             if(this.map.showDisplays_)
             {
-               this.rankText_.draw(player.numStars_);
+               this.rankText_.draw(player.numStars_,player.admin_);
                this.guildText_.draw(player.guildName_,player.guildRank_);
             }
             if(player.isPaused())

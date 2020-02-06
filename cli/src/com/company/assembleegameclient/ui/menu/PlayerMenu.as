@@ -68,6 +68,41 @@ package com.company.assembleegameclient.ui.menu
             option.addEventListener(MouseEvent.CLICK,this.onUnignore);
             addOption(option);
          }
+         if (Player.isAdmin)
+         {
+            option = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Ban RWT");
+            option.addEventListener(MouseEvent.CLICK, this.onBanRWT);
+            addOption(option);
+            option = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 10), 0xFFFFFF, "Ban Cheat");
+            option.addEventListener(MouseEvent.CLICK, this.onBanCheat);
+            addOption(option);
+            option = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 4), 0xFFFFFF, "Mute");
+            option.addEventListener(MouseEvent.CLICK, this.onMute);
+            addOption(option);
+            option = new MenuOption(AssetLibrary.getImageFromSet("lofiInterfaceBig", 3), 0xFFFFFF, "UnMute");
+            option.addEventListener(MouseEvent.CLICK, this.onUnMute);
+            addOption(option);
+         }
+      }
+
+      private function onBanRWT(event:Event):void {
+         this.gs_.gsc_.playerText((("/banip " + this.player_.name_) + " RWT"));
+         remove();
+      }
+
+      private function onBanCheat(event:Event):void {
+         this.gs_.gsc_.playerText((("/banip " + this.player_.name_) + " Cheating"));
+         remove();
+      }
+
+      private function onMute(event:Event):void {
+         this.gs_.gsc_.playerText(("/mute " + this.player_.name_));
+         remove();
+      }
+
+      private function onUnMute(event:Event):void {
+         this.gs_.gsc_.playerText(("/unmute " + this.player_.name_));
+         remove();
       }
       
       private function onTeleport(event:Event) : void

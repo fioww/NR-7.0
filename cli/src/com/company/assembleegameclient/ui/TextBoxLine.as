@@ -17,19 +17,21 @@ package com.company.assembleegameclient.ui
       public var time_:int;
       public var name_:String;
       public var rankIcon_:Sprite = null;
+      public var isAdmin_:Boolean;
       public var recipient_:String;
       public var toMe_:Boolean;
       public var text_:String;
       
-      public function TextBoxLine(time:int, name:String, objectId:int, numStars:int, recipient:String, toMe:Boolean, text:String)
+      public function TextBoxLine(time:int, name:String, objectId:int, numStars:int, isAdmin:Boolean, recipient:String, toMe:Boolean, text:String)
       {
          super();
          this.time_ = time;
          this.name_ = name;
          if(numStars >= 0)
          {
-            this.rankIcon_ = FameUtil.numStarsToIcon(numStars);
+            this.rankIcon_ = FameUtil.numStarsToIcon(numStars,isAdmin);
          }
+         this.isAdmin_ = isAdmin;
          this.recipient_ = recipient;
          this.toMe_ = toMe;
          this.text_ = text;

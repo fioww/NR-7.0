@@ -79,6 +79,7 @@ package kabam.rotmg.messaging.impl.data
       public static const BACKPACK_7_STAT:int = 74;
       public static const HASBACKPACK_STAT:int = 75;
       public static const TEXTURE_STAT:int = 76;
+      public static const ADMIN = 77;
        
       
       public var statType_:uint = 0;

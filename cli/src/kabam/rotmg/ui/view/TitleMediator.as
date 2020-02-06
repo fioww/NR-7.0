@@ -61,7 +61,7 @@ package kabam.rotmg.ui.view
       private function makeEnvironmentData() : EnvironmentData
       {
          var data:EnvironmentData = new EnvironmentData();
-         data.isAdmin = this.playerModel.isAdmin();
+         data.isAdmin = this.playerModel.isAdmin();//change to map editor
          data.buildLabel = this.setup.getBuildLabel();
          return data;
       }

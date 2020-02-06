@@ -11,6 +11,8 @@ package kabam.rotmg.messaging.impl.incoming
       public var objectId_:int;
       
       public var numStars_:int;
+
+      public var admin_:int;
       
       public var bubbleTime_:uint;
       
@@ -30,6 +32,7 @@ package kabam.rotmg.messaging.impl.incoming
          this.name_ = data.readUTF();
          this.objectId_ = data.readInt();
          this.numStars_ = data.readInt();
+         this.admin_ = data.readInt();
          this.bubbleTime_ = data.readUnsignedByte();
          this.recipient_ = data.readUTF();
          this.text_ = data.readUTF();

@@ -121,7 +121,7 @@ package com.company.assembleegameclient.ui.tooltip
       {
          return this.isEquippable_ && this.curItemXML_ == null;
       }
-      
+
       private function addIcon() : void
       {
          var eqXML:XML = ObjectLibrary.xmlLibrary_[this.objectType_];

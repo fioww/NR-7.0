@@ -78,7 +78,7 @@ package kabam.rotmg.game.view
       {
          if(this.account.isRegistered() || this.chatFilter.guestChatFilter(vo.name))
          {
-            this.view.addTextFull(vo.name,vo.objectId,vo.numStars,vo.recipient,vo.text);
+            this.view.addTextFull(vo.name,vo.objectId,vo.numStars,vo.isAdmin,vo.recipient,vo.text);
          }
       }
       

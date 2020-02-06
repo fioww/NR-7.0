@@ -165,16 +165,16 @@ package com.company.assembleegameclient.ui
       
       public function addText(name:String, text:String) : void
       {
-         var textBoxLine:TextBoxLine = new TextBoxLine(getTimer(),name,-1,-1,"",false,text);
+         var textBoxLine:TextBoxLine = new TextBoxLine(getTimer(),name,-1,-1,false,"",false,text);
          lines_.push(textBoxLine);
          this.refreshStatusBox();
       }
       
-      public function addTextFull(name:String, objectId:int, numStars:int, recipient:String, text:String) : void
+      public function addTextFull(name:String, objectId:int, numStars:int, isAdmin:Boolean, recipient:String, text:String) : void
       {
          var fromMe:Boolean = recipient != "" && name == this.gs_.model.getName();
          var toMe:Boolean = recipient == this.gs_.model.getName();
-         var textBoxLine:TextBoxLine = new TextBoxLine(getTimer(),name,objectId,numStars,recipient,toMe,text);
+         var textBoxLine:TextBoxLine = new TextBoxLine(getTimer(),name,objectId,numStars,isAdmin,recipient,toMe,text);
          lines_.push(textBoxLine);
          this.refreshStatusBox();
          if(toMe)

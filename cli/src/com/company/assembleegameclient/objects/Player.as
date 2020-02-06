@@ -68,6 +68,7 @@ import kabam.rotmg.ui.model.TabStripModel;
 
       private static const LOW_HEALTH_CT_OFFSET:int = 128;
       private static var lowHealthCT:Dictionary = new Dictionary();
+      public static var isAdmin:Boolean = false;
 
       public var skinId:int;
       public var skin:AnimatedChar;
@@ -111,6 +112,7 @@ import kabam.rotmg.ui.model.TabStripModel;
       public var maxHPMax_:int = 0;
       public var maxMPMax_:int = 0;
       public var hasBackpack_:Boolean = false;
+      public var admin_:Boolean = false;
       public var starred_:Boolean = false;
       public var ignored_:Boolean = false;
       public var distSqFromThisPlayer_:Number = 0;
@@ -616,7 +618,7 @@ import kabam.rotmg.ui.model.TabStripModel;
          var nameBitmapData:BitmapData = new BitmapData(nameText.width + 20,64,true,0);
          nameBitmapData.draw(nameText,NAME_OFFSET_MATRIX);
          nameBitmapData.applyFilter(nameBitmapData,nameBitmapData.rect,PointUtil.ORIGIN,new GlowFilter(0,1,3,3,2,1));
-         var rankIcon:Sprite = FameUtil.numStarsToIcon(this.numStars_);
+         var rankIcon:Sprite = FameUtil.numStarsToIcon(this.numStars_,this.admin_);
          nameBitmapData.draw(rankIcon,RANK_OFFSET_MATRIX);
          return nameBitmapData;
       }

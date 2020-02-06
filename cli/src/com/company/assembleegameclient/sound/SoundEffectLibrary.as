@@ -94,7 +94,7 @@ public class SoundEffectLibrary {
         }
     }
 
-    public static function onIOError(IOErrorEvent:IOErrorEvent):void {
+    public static function onIOError(ioErrorEvent:IOErrorEvent):void {
     }
 
 

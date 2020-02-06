@@ -14,10 +14,12 @@ package com.company.assembleegameclient.ui
       public var largeText_:Boolean;
       
       private var numStars_:int = -1;
+
+      private var admin_:Boolean = false;
       
       private var prefix_:SimpleText = null;
       
-      public function RankText(numStars:int, largeText:Boolean, includePrefix:Boolean)
+      public function RankText(numStars:int, largeText:Boolean, includePrefix:Boolean, isAdmin:Boolean = false)
       {
          super();
          this.largeText_ = largeText;
@@ -32,10 +34,10 @@ package com.company.assembleegameclient.ui
          }
          mouseEnabled = false;
          mouseChildren = false;
-         this.draw(numStars);
+         this.draw(numStars, isAdmin);
       }
       
-      public function draw(numStars:int) : void
+      public function draw(numStars:int, admin:Boolean) : void
       {
          var icon:Sprite = null;
          if(numStars == this.numStars_)
@@ -55,10 +57,11 @@ package com.company.assembleegameclient.ui
          var text:SimpleText = new SimpleText(!!this.largeText_?int(18):int(16),11776947,false,0,0);
          text.setBold(this.largeText_);
          text.text = this.numStars_.toString();
+         this.admin_ = admin;
          text.updateMetrics();
          text.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
          this.sprite_.addChild(text);
-         icon = !!this.largeText_?FameUtil.numStarsToBigImage(this.numStars_):FameUtil.numStarsToImage(this.numStars_);
+         icon = !!this.largeText_?FameUtil.numStarsToBigImage(this.numStars_,this.admin_):FameUtil.numStarsToImage(this.numStars_,this.admin_);
          icon.x = text.width + 2;
          this.sprite_.addChild(icon);
          icon.y = int(text.height / 2 - icon.height / 2) + 1;
