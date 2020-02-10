@@ -109,15 +109,18 @@ namespace wServer.realm
                 return;
             }
 
-            if (GetPlayerCount() < 
-                (conInfo.Account.Admin ? _maxPlayerCountWithPriority : _maxPlayerCount))
+            // don't use queue for ranked players
+            if (conInfo.Account.Rank > 0)
             {
-                Connect(conInfo);
+                if (GetPlayerCount() < _maxPlayerCountWithPriority)
+                {
+                    Connect(conInfo);
+                    return;
+                }
+
+                conInfo.Client.SendFailure("Server at max capacity.");
                 return;
             }
-
-            conInfo.Client.SendFailure("Server at max capacity.");
-            return;
         }
 
         public void AddReconnect(int accountId, Reconnect rcp)
@@ -225,8 +228,8 @@ namespace wServer.realm
 
             var world = client.Manager.GetWorld(gameId);
 
-            //
-            if (gameId == World.Test && acc.Admin)
+            // make test worlds
+            if (gameId == World.Test && acc.Rank >= 50)
             {
                 world = new Test();
                 _manager.AddWorld(world);
@@ -245,9 +248,9 @@ namespace wServer.realm
             }
 
             if (world is Test &&
-                !(world as Test).JsonLoaded && !acc.Admin)
+                !(world as Test).JsonLoaded && acc.Rank < 50) //to-do: client.Manager.Resources.Settings.EditorMinRank
             {
-                client.SendFailure("Only players with admin permissions can make test maps.",
+                client.SendFailure("Only players with a rank of 50 and above can make test maps.",
                     Failure.MessageWithDisconnect);
                 return;
             }

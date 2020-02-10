@@ -755,7 +755,8 @@ public class GameObject extends BasicObject
          if(damageAmount > 0)
          {
             pierced = this.isArmorBroken() || proj != null && proj.projProps_.armorPiercing_;
-            map_.mapOverlay_.addStatusText(new CharacterStatusText(this,"-" + damageAmount,pierced?9437439:16711680,1000));
+            //to-do: check with options to see if the player wants this enabled or not. (-dmg[hp left])
+            map_.mapOverlay_.addStatusText(new CharacterStatusText(this, "-" + damageAmount + "[" + (hp_ - damageAmount) + "]", pierced ? 9437439 : 16711680 ,1000));
          }
       }
       

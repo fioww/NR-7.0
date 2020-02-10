@@ -42,6 +42,7 @@ import flash.events.Event;
       public var classAvailability:Object;
       public var menuMusic_:String;
       public var deadMusic_:String;
+      public var rank_:int;
       private var account:Account;
       
       public function SavedCharactersList(data:String)
@@ -96,7 +97,9 @@ import flash.events.Event;
          this.name_ = accountXML.Name;
          this.nameChosen_ = accountXML.hasOwnProperty("NameChosen");
          this.isAdmin_ = accountXML.hasOwnProperty("Admin");
+         this.rank_ = int(accountXML.Rank);
          Player.isAdmin = this.isAdmin_;
+         Player.rank = this.rank_;
          this.totalFame_ = int(accountXML.Stats.TotalFame);
          this.fame_ = int(accountXML.Stats.Fame);
          this.credits_ = int(accountXML.Credits);

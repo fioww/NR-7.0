@@ -86,6 +86,13 @@ namespace wServer.networking.handlers
                 return null;
             }
 
+            var minRank = client.Manager.Config.serverInfo.minRank;
+            if (acc.Rank < minRank)
+            {
+                client.SendFailure($"Rank Required Server, you need at least rank {minRank} to play on {client.Manager.Config.serverInfo.name}.", Failure.MessageWithDisconnect);
+                return null;
+            }
+
             return acc;
         }
     }

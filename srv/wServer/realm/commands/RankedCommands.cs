@@ -18,7 +18,6 @@ using NLog;
 
 namespace wServer.realm.commands
 {
-    /*
     class SpawnCommand : Command
     {
         static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -1756,5 +1755,4 @@ namespace wServer.realm.commands
             return true;
         }
     }
-*/
 }

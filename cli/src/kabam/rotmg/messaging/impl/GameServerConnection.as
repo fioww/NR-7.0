@@ -1567,6 +1567,9 @@ package kabam.rotmg.messaging.impl
                case StatData.ADMIN:
                   player.admin_ = value == 1 ? true : false;
                   continue;
+               case StatData.RANK:
+                  player.rank_ = value;
+                  break;
                default:
                   trace("unhandled stat: " + stat.statType_);
                   continue;
@@ -1639,7 +1642,6 @@ package kabam.rotmg.messaging.impl
                   return;
                }
                player.handleExpUp(player.exp_ - oldExp);
-               player.handleFameUp(player.fame_ - oldFame)
             }
          }
       }

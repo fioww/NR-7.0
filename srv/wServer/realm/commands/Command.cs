@@ -11,20 +11,27 @@ namespace wServer.realm.commands
 
         public string CommandName { get; private set; }
         public string Alias { get; private set; }
+        public int PermissionLevel { get; private set; }
         public bool ListCommand { get; private set; }
 
-        protected Command(string name, string alias = null, bool listCommand = true)
+        protected Command(string name, int permLevel = 0, string alias = null, bool listCommand = true)
         {
             CommandName = name;
+            PermissionLevel = permLevel;
             ListCommand = listCommand;
             Alias = alias;
         }
 
         protected abstract bool Process(Player player, RealmTime time, string args);
 
+        static int GetPermissionLevel(Player player)
+        {
+            return player.Client.Account.Rank;
+        }
+
         public bool HasPermission(Player player)
         {
-            return true;
+            return GetPermissionLevel(player) >= PermissionLevel;
         }
 
         public bool Execute(Player player, RealmTime time, string args, bool bypassPermission = false)

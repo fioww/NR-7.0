@@ -15,11 +15,13 @@ package com.company.assembleegameclient.ui
       
       private var numStars_:int = -1;
 
+      private var rank_:int = 0;
+
       private var admin_:Boolean = false;
       
       private var prefix_:SimpleText = null;
       
-      public function RankText(numStars:int, largeText:Boolean, includePrefix:Boolean, isAdmin:Boolean = false)
+      public function RankText(numStars:int, largeText:Boolean, includePrefix:Boolean, rank:int = 0, isAdmin:Boolean = false)
       {
          super();
          this.largeText_ = largeText;
@@ -34,17 +36,19 @@ package com.company.assembleegameclient.ui
          }
          mouseEnabled = false;
          mouseChildren = false;
-         this.draw(numStars, isAdmin);
+         this.draw(numStars, rank, isAdmin);
       }
       
-      public function draw(numStars:int, admin:Boolean) : void
+      public function draw(numStars:int, rank:int, admin:Boolean) : void
       {
          var icon:Sprite = null;
-         if(numStars == this.numStars_)
+         if (numStars == this.numStars_ && rank == this.rank_)
          {
             return;
          }
          this.numStars_ = numStars;
+         this.rank_ = rank;
+         this.admin_ = admin;
          if(this.sprite_ != null && contains(this.sprite_))
          {
             removeChild(this.sprite_);
@@ -56,8 +60,7 @@ package com.company.assembleegameclient.ui
          this.sprite_ = new Sprite();
          var text:SimpleText = new SimpleText(!!this.largeText_?int(18):int(16),11776947,false,0,0);
          text.setBold(this.largeText_);
-         text.text = this.numStars_.toString();
-         this.admin_ = admin;
+         text.text = this.numStars_.toString() + (rank ? "-" + rank : "");
          text.updateMetrics();
          text.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
          this.sprite_.addChild(text);

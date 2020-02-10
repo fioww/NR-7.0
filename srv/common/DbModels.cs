@@ -361,6 +361,12 @@ namespace common
             set { SetValue<int>("nextCharId", value); }
         }
 
+        public int LegacyRank
+        {
+            get { return GetValue<int>("rank"); }
+            set { SetValue<int>("rank", value); }
+        }
+
         public ushort[] Skins
         {
             get { return GetValue<ushort[]>("skins") ?? new ushort[0]; }
@@ -424,6 +430,11 @@ namespace common
         public void RefreshLastSeen()
         {
             LastSeen = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        }
+
+        public int Rank
+        {
+            get { return LegacyRank; }
         }
     }
 

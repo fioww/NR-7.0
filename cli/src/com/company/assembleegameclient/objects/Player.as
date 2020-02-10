@@ -68,6 +68,7 @@ import kabam.rotmg.ui.model.TabStripModel;
 
       private static const LOW_HEALTH_CT_OFFSET:int = 128;
       private static var lowHealthCT:Dictionary = new Dictionary();
+      public static var rank:int = 0;
       public static var isAdmin:Boolean = false;
 
       public var skinId:int;
@@ -112,6 +113,7 @@ import kabam.rotmg.ui.model.TabStripModel;
       public var maxHPMax_:int = 0;
       public var maxMPMax_:int = 0;
       public var hasBackpack_:Boolean = false;
+      public var rank_:int = 0;
       public var admin_:Boolean = false;
       public var starred_:Boolean = false;
       public var ignored_:Boolean = false;
@@ -299,15 +301,6 @@ import kabam.rotmg.ui.model.TabStripModel;
          map_.mapOverlay_.addStatusText(new CharacterStatusText(this,"+" + exp + " EXP",65280,1000));
       }
 
-      public function handleFameUp(fame:int) : void
-      {
-         if(level_ != 20)
-         {
-            return;
-         }
-         map_.mapOverlay_.addStatusText(new CharacterStatusText(this,"+" + fame + " Fame",0xE25F00,1000));
-      }
-      
       private function getNearbyMerchant() : Merchant
       {
          var p:Point = null;

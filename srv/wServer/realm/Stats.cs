@@ -84,6 +84,7 @@ namespace wServer.realm
         HasBackpack = 75,
         Skin = 76,
         Admin = 77,
+        Rank = 78,
 
         None = 255
     }

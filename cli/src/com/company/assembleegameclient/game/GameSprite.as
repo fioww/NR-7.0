@@ -38,8 +38,8 @@ package com.company.assembleegameclient.game
    import kabam.rotmg.messaging.impl.GameServerConnection;
    import kabam.rotmg.messaging.impl.incoming.MapInfo;
    import kabam.rotmg.servers.api.Server;
-import kabam.rotmg.stage3D.Renderer;
-import kabam.rotmg.ui.UIUtils;
+   import kabam.rotmg.stage3D.Renderer;
+   import kabam.rotmg.ui.UIUtils;
    import kabam.rotmg.ui.view.HUDView;
    import org.osflash.signals.Signal;
    
@@ -305,8 +305,9 @@ import kabam.rotmg.ui.UIUtils;
             this.drawCharacterWindow.dispatch(player);
             if(this.map.showDisplays_)
             {
-               this.rankText_.draw(player.numStars_,player.admin_);
+               this.rankText_.draw(player.numStars_,player.rank_,player.admin_);
                this.guildText_.draw(player.guildName_,player.guildRank_);
+               this.guildText_.x = this.rankText_.width + 16;
             }
             if(player.isPaused())
             {

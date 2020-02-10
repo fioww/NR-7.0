@@ -178,6 +178,11 @@ package kabam.rotmg.core.model
       {
          return this.charList.savedChars_[i];
       }
+
+      public function getRank():int
+      {
+         return this.charList.rank_;
+      }
       
       public function isAdmin() : Boolean
       {

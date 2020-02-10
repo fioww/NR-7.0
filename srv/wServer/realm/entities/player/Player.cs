@@ -163,6 +163,13 @@ namespace wServer.realm.entities
             set { _oxygenBar.SetValue(value); }
         }
 
+        private readonly SV<int> _rank;
+        public int Rank
+        {
+            get { return _rank.GetValue(); }
+            set { _rank.SetValue(value); }
+        }
+
         private readonly SV<int> _admin;
         public int Admin
         {
@@ -246,6 +253,7 @@ namespace wServer.realm.entities
             stats[StatsType.MagicStackCount] = MagicPots.Count;
             stats[StatsType.HasBackpack] = (HasBackpack) ? 1 : 0;
             stats[StatsType.OxygenBar] = OxygenBar;
+            stats[StatsType.Rank] = Rank;
             stats[StatsType.Admin] = Admin;
         }
 
@@ -301,6 +309,7 @@ namespace wServer.realm.entities
             _mp = new SV<int>(this, StatsType.MP, client.Character.MP);
             _hasBackpack = new SV<bool>(this, StatsType.HasBackpack, client.Character.HasBackpack, true);
             _oxygenBar = new SV<int>(this, StatsType.OxygenBar, -1, true);
+            _rank = new SV<int>(this, StatsType.Rank, client.Account.Rank);
             _admin = new SV<int>(this, StatsType.Admin, client.Account.Admin ? 1 : 0);
 
             Name = client.Account.Name;
