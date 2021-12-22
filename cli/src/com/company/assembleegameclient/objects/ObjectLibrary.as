@@ -50,7 +50,8 @@ import com.company.util.AssetLibrary;
          "Sign":Sign,
          "SpiderWeb":SpiderWeb,
          "Stalagmite":Stalagmite,
-         "Wall":Wall
+         "Wall":Wall,
+         "ClosedGiftChest":ClosedGiftChest
       };
        
       

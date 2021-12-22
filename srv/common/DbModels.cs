@@ -436,6 +436,12 @@ namespace common
         {
             get { return LegacyRank; }
         }
+        
+        public ushort[] Gifts
+        {
+            get { return GetValue<ushort[]>("gifts") ?? new ushort[0]; }
+            set { SetValue<ushort[]>("gifts", value); }
+        }
     }
 
     public struct DbClassStatsEntry

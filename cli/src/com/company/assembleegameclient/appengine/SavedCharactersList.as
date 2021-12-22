@@ -44,6 +44,7 @@ import flash.events.Event;
       public var deadMusic_:String;
       public var rank_:int;
       private var account:Account;
+      public var canMapEdit_:Boolean;
       
       public function SavedCharactersList(data:String)
       {
@@ -108,6 +109,7 @@ import flash.events.Event;
          this.hasPlayerDied = !accountXML.hasOwnProperty("isFirstDeath");
          this.menuMusic_ = accountXML.MenuMusic;
          this.deadMusic_ = accountXML.DeadMusic;
+         this.canMapEdit_ = accountXML.hasOwnProperty("CanMapEdit");
       }
 
       private function parseGuildData(accountXML:XML) : void

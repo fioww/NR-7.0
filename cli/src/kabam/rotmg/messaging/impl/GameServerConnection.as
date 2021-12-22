@@ -66,7 +66,8 @@ package kabam.rotmg.messaging.impl
    import kabam.rotmg.classes.model.CharacterClass;
    import kabam.rotmg.classes.model.CharacterSkin;
    import kabam.rotmg.classes.model.CharacterSkinState;
-   import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
+import kabam.rotmg.game.signals.GiftStatusUpdateSignal;
+import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
    import kabam.rotmg.classes.model.ClassesModel;
    import kabam.rotmg.constants.GeneralConstants;
    import kabam.rotmg.constants.ItemConstants;
@@ -287,11 +288,13 @@ package kabam.rotmg.messaging.impl
       private var playerModel:PlayerModel;
       private var injector:Injector;
       private var model:GameModel;
+      private var giftChestUpdateSignal:GiftStatusUpdateSignal;
       
       public function GameServerConnection(gs:GameSprite, server:Server, gameId:int, createCharacter:Boolean, charId:int, keyTime:int, key:ByteArray, mapJSON:String)
       {
          super();
          this.injector = StaticInjectorContext.getInjector();
+         this.giftChestUpdateSignal = this.injector.getInstance(GiftStatusUpdateSignal);
          this.addTextLine = this.injector.getInstance(AddTextLineSignal);
          this.addSpeechBalloon = this.injector.getInstance(AddSpeechBalloonSignal);
          this.updateGroundTileSignal = this.injector.getInstance(UpdateGroundTileSignal);
@@ -1184,6 +1187,12 @@ package kabam.rotmg.messaging.impl
                break;
             case "showKeyUI":
                ShowKeyUISignal.instance.dispatch();
+               break;
+            case "giftChestOccupied":
+               this.giftChestUpdateSignal.dispatch(GiftStatusUpdateSignal.HAS_GIFT);
+               break;
+            case "giftChestEmpty":
+               this.giftChestUpdateSignal.dispatch(GiftStatusUpdateSignal.HAS_NO_GIFT);
                break;
          }
       }

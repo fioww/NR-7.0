@@ -11,7 +11,7 @@ package kabam.rotmg.application.impl
 
       private const ENCRYPTED:String = "http://" + SERVER;
       
-      private const BUILD_LABEL:String = "RotMG Release #{RELEASE} x{CUSTOM-RELEASE}";
+      private const BUILD_LABEL:String = "RotMG v{RELEASE}-{CUSTOM-RELEASE}";
       
       public function ReleaseSetup()
       {

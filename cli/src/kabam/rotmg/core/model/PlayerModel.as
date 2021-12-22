@@ -188,6 +188,11 @@ package kabam.rotmg.core.model
       {
          return this.charList.isAdmin_;
       }
+
+      public function canMapEdit() : Boolean
+      {
+         return this.charList.canMapEdit_;
+      }
       
       public function getNews() : Vector.<SavedNewsItem>
       {

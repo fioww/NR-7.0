@@ -27,11 +27,14 @@ package com.company.assembleegameclient.ui.panels
          this.titleText_.filters = [new DropShadowFilter(0,0,0)];
          this.titleText_.y = 6;
          addChild(this.titleText_);
-         this.button_ = new TextButton(16,button);
-         this.button_.addEventListener(MouseEvent.CLICK,this.onButtonClick);
-         this.button_.x = WIDTH / 2 - this.button_.width / 2;
-         this.button_.y = HEIGHT - this.button_.height - 4;
-         addChild(this.button_);
+         if (button != "")
+         {
+            this.button_ = new TextButton(16, button);
+            this.button_.addEventListener(MouseEvent.CLICK, this.onButtonClick);
+            this.button_.x = WIDTH / 2 - this.button_.width / 2;
+            this.button_.y = HEIGHT - this.button_.height - 4;
+            addChild(this.button_);
+         }
       }
       
       protected function onButtonClick(event:MouseEvent) : void

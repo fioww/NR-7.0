@@ -25,9 +25,7 @@ namespace wServer.realm.entities.vendors
         [Description("Transaction failed.")]
         TransactionFailed,
         [Description("Item is currently being purchased.")]
-        BeingPurchased,
-        [Description("You don't have enough inventory slots.")]
-        NotEnoughSlots
+        BeingPurchased
     }
 
     public abstract class SellableObject : StaticObject
@@ -75,7 +73,7 @@ namespace wServer.realm.entities.vendors
             base.ExportStats(stats);
         }
 
-        protected BuyResult ValidateCustomer(Player player, Item item)
+        protected BuyResult ValidateCustomer(Player player)
         {
             if (Owner is Test)
                 return BuyResult.IsTestMap;
@@ -93,13 +91,6 @@ namespace wServer.realm.entities.vendors
 
             if (player.GetCurrency(Currency) < Price)
                 return BuyResult.InsufficientFunds;
-
-            if (item != null) // not perfect, but does the job for now
-            {
-                var availableSlot = player.Inventory.CreateTransaction().GetAvailableInventorySlot(item);
-                if (availableSlot == -1)
-                    return BuyResult.NotEnoughSlots;
-            }
 
             return BuyResult.Ok;
         }

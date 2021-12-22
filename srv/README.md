@@ -78,8 +78,7 @@ I chose to make the server compatible with version 7.0 because I feel that it is
 - [x] Fix cloak (& possibly others) tooltip not working when they are equipped
 - [x] Fix client loading up wrong character (causes skin view to bug out)
 - [x] Fix skin ownership parsing
-- [x] Fix dye merchants not showing the look of the dye 
-- [x] Remove gifts completely (really want this source to be barebones!)
+- [x] Fix dye merchants not showing the look of the dye
 - [x] Fix small network latency even on localhost (Tasks are bad, try reset events.)
 - [x] Add tab switching like on prod (really important!!!)
 - [x] Fix merchant taking gold if inv is full
@@ -138,5 +137,6 @@ Server code is mostly just NR Core with some changes here and there and cleanup 
 For that, credits go to:
 - Developers of Nilly's Realm Core https://github.com/cp-nilly/NR-CORE
 - Skilly
+- Fiow for additional moisturization
 
 If you'd like to use the source, I would appreciate if you let the world know that you use this source, it spreads the word around, and helps poke out potential stability issues that might become occurent in your server.

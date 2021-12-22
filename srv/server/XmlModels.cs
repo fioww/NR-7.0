@@ -272,6 +272,8 @@ namespace server
 
         public bool NameChosen { get; private set; }
         public bool Admin { get; private set; }
+        public int Rank { get; private set; }
+        public bool CanMapEdit { get; private set; }
         public bool FirstDeath { get; private set; }
 
         public int Credits { get; private set; }
@@ -295,6 +297,7 @@ namespace server
 
                 NameChosen = acc.NameChosen,
                 Admin = acc.Admin,
+                Rank = acc.Rank,
                 FirstDeath = acc.FirstDeath,
 
                 Credits = acc.Credits,
@@ -308,6 +311,7 @@ namespace server
                 Guild = GuildIdentity.FromDb(acc, new DbGuild(acc)),
 
                 Skins = acc.Skins ?? new ushort[0],
+                CanMapEdit = acc.Admin || acc.Rank > 50
             };
         }
 
@@ -320,6 +324,8 @@ namespace server
 
                     NameChosen ? new XElement("NameChosen", "") : null,
                     Admin ? new XElement("Admin", "") : null,
+                    CanMapEdit ? new XElement("CanMapEdit", "") : null,
+                    new XElement("Rank", Rank),
                     FirstDeath ? new XElement("isFirstDeath", "") : null,
 
                     new XElement("Credits", Credits),

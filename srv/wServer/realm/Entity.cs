@@ -585,12 +585,15 @@ namespace wServer.realm
                 case "ClosedVaultChest":
                     return new ClosedVaultChest(manager, id);
                 case "ClosedVaultChestGold":
-                case "ClosedGiftChest":
                 case "VaultChest":
                 case "Merchant":
                     return new WorldMerchant(manager, id);
                 case "GuildMerchant":
                     return new GuildMerchant(manager, id);
+                case "OneWayContainer":
+                    return new OneWayContainer(manager, id);
+                case "ClosedGiftChest":
+                    return new GiftChest(manager, id);
                 default:
                     Log.Warn("Not supported type: {0}", type);
                     return new Entity(manager, id);

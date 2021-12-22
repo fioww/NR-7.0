@@ -102,7 +102,7 @@ package kabam.rotmg.ui.view
       private function addChildren() : void
       {
          addChild(this.container);
-         this.data.isAdmin && this.container.addChild(this.editorButton);
+         this.data.canMapEdit_ && this.container.addChild(this.editorButton);
       }
       
       private function positionButtons() : void
