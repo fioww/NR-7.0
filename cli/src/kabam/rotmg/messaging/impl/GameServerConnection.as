@@ -56,7 +56,8 @@ package kabam.rotmg.messaging.impl
    import flash.geom.Point;
    import flash.net.FileReference;
    import flash.utils.ByteArray;
-   import flash.utils.Timer;
+import flash.utils.Dictionary;
+import flash.utils.Timer;
    import flash.utils.getTimer;
    import kabam.lib.net.api.MessageMap;
    import kabam.lib.net.api.MessageProvider;
@@ -67,6 +68,7 @@ package kabam.rotmg.messaging.impl
    import kabam.rotmg.classes.model.CharacterSkin;
    import kabam.rotmg.classes.model.CharacterSkinState;
 import kabam.rotmg.game.signals.GiftStatusUpdateSignal;
+import kabam.rotmg.messaging.impl.incoming.SetFocus;
 import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
    import kabam.rotmg.classes.model.ClassesModel;
    import kabam.rotmg.constants.GeneralConstants;
@@ -246,7 +248,8 @@ import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
       public static const PLAYSOUND:int = 68;
       public static const GLOBAL_NOTIFICATION:int = 69;
       public static const RESKIN:int = 70;
-      public static const SWITCH_MUSIC = 106;
+      public static const SWITCH_MUSIC:int = 71;
+      public static const SET_FOCUS:int = 72;
       
       private static const TO_MILLISECONDS:int = 1000;
       public static var instance:GameServerConnection;
@@ -429,6 +432,7 @@ import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
          messages.map(INVITEDTOGUILD).toMessage(InvitedToGuild).toMethod(this.onInvitedToGuild);
          messages.map(PLAYSOUND).toMessage(PlaySound).toMethod(this.onPlaySound);
          messages.map(SWITCH_MUSIC).toMessage(SwitchMusic).toMethod(this.onSwitchMusic);
+         messages.map(SET_FOCUS).toMessage(SetFocus).toMethod(this.setFocus);
       }
 
       private function onSwitchMusic(sm:SwitchMusic):void {
@@ -509,6 +513,7 @@ import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
          messages.unmap(INVITEDTOGUILD);
          messages.unmap(PLAYSOUND);
          messages.unmap(SWITCH_MUSIC);
+         messages.unmap(SET_FOCUS);
       }
       
       private function encryptConnection() : void
@@ -759,39 +764,45 @@ import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
          setCondition.conditionDuration_ = conditionDuration;
          this.serverConnection.sendMessage(setCondition);
       }
-      
-      public function move(tickId:int, player:Player) : void
+
+      public function move(tickId:int, player:Player):void
       {
+         if (this.player.map_ == null)
+         {
+            return;
+         }
+
          var len:int = 0;
          var i:int = 0;
          var x:Number = -1;
          var y:Number = -1;
-         if(player && !player.isPaused())
+         var controlled:GameObject = player != null && player.commune != null && !(player.commune is Player) ? player.commune : player;
+         if (controlled && !controlled.isPaused())
          {
-            x = player.x_;
-            y = player.y_;
+            x = controlled.x_;
+            y = controlled.y_;
          }
          var move:Move = this.messages.require(MOVE) as Move;
+         move.objectId_ = controlled != null ? controlled.objectId_ : 0;
          move.tickId_ = tickId;
-         move.time_ = this.gs_.lastUpdate_;
+         move.time_ = gs_.lastUpdate_;
          move.newPosition_.x_ = x;
          move.newPosition_.y_ = y;
-         var lastMove:int = this.gs_.moveRecords_.lastClearTime_;
+         var lastMove:int = gs_.moveRecords_.lastClearTime_;
          move.records_.length = 0;
-         if(lastMove >= 0 && move.time_ - lastMove > 125)
+         if (lastMove >= 0 && move.time_ - lastMove > 125)
          {
-            len = Math.min(10,this.gs_.moveRecords_.records_.length);
-            for(i = 0; i < len; i++)
+            len = Math.min(10, gs_.moveRecords_.records_.length);
+            i = 0;
+            while (i < len)
             {
-               if(this.gs_.moveRecords_.records_[i].time_ >= move.time_ - 25)
-               {
-                  break;
-               }
-               move.records_.push(this.gs_.moveRecords_.records_[i]);
+               if (gs_.moveRecords_.records_[i].time_ >= (move.time_ - 25)) break;
+               move.records_.push(gs_.moveRecords_.records_[i]);
+               i++;
             }
          }
-         this.gs_.moveRecords_.clear(move.time_);
-         this.serverConnection.sendMessage(move);
+         gs_.moveRecords_.clear(move.time_);
+         serverConnection.sendMessage(move);
          player && player.onMove();
       }
       
@@ -1960,6 +1971,18 @@ import kabam.rotmg.messaging.impl.incoming.SwitchMusic;
          var dialog:Dialog = event.currentTarget as Dialog;
          dialog.parent.removeChild(dialog);
          this.gs_.closed.dispatch();
+      }
+
+      private function setFocus(pkt:SetFocus):void
+      {
+         var goDict:Dictionary = this.gs_.map.goDict_;
+         if (goDict)
+         {
+            var go:GameObject = goDict[pkt.objectId_];
+            gs_.setFocus(go);
+            gs_.setMiniMapFocus(go);
+            player.commune = playerId_ == pkt.objectId_ ? null : go;
+         }
       }
    }
 }

@@ -197,6 +197,11 @@ import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
          {
          }
       }
+
+      public function setMiniMapFocus(object:GameObject) : void
+      {
+         this.hudView.miniMap.setFocus(object);
+      }
       
       private function startTutorial() : void
       {

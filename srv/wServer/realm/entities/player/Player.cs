@@ -514,7 +514,7 @@ namespace wServer.realm.entities
 
             HandleQuest(time, true, position);
 
-            var id = Id;
+            var id = IsControlling ? SpectateTarget.Id : Id;
             var tpPkts = new Packet[]
             {
                 new Goto()
@@ -862,7 +862,14 @@ namespace wServer.realm.entities
 
         public override void Move(float x, float y)
         {
-            base.Move(x, y);
+            if (SpectateTarget != null && SpectateTarget is not Player)
+            {
+                SpectateTarget.MoveEntity(x, y);
+            }
+            else
+            {
+                base.Move(x, y);
+            }
 
             if ((int)X != Sight.LastX || (int)Y != Sight.LastY)
             {
@@ -878,6 +885,11 @@ namespace wServer.realm.entities
         public override void Dispose()
         {
             base.Dispose();
+            if (SpectateTarget != null)
+            {
+                SpectateTarget.FocusLost -= ResetFocus;
+                SpectateTarget.Controller = null;
+            }
             _clientEntities.Dispose();
         }
 
@@ -895,6 +907,26 @@ namespace wServer.realm.entities
         public void DropNextRandom()
         {
             Client.Random.NextInt();
+        }
+        
+        public Entity SpectateTarget { get; set; }
+        public bool IsControlling => SpectateTarget != null && SpectateTarget is not Player;
+        public void ResetFocus(object target, EventArgs e)
+        {
+            var entity = target as Entity;
+            entity.FocusLost -= ResetFocus;
+            entity.Controller = null;
+
+            if (Owner == null)
+                return;
+
+            SpectateTarget = null;
+            Owner.Timers.Add(new WorldTimer(3000, (w, t) =>
+                ApplyConditionEffect(ConditionEffectIndex.Paused, 0)));
+            Client.SendPacket(new SetFocus()
+            {
+                ObjectId = Id
+            });
         }
     }
 }

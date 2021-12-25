@@ -41,14 +41,14 @@ namespace wServer.realm.commands
 
         private const int Delay = 3; // in seconds
 
-        public SpawnCommand() : base("spawn", 80) { }
+        public SpawnCommand() : base("spawn", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
             args = args.Trim();
-            return args.StartsWith("{") ?
-                SpawnJson(player, args) :
-                SpawnBasic(player, args);
+            return args.StartsWith("{") ? SpawnJson(player, args) : SpawnBasic(player, args);
         }
 
         private bool SpawnJson(Player player, string json)
@@ -71,6 +71,7 @@ namespace wServer.realm.commands
                 player.SendError("Forbidden.");
                 return false;
             }
+
             if (player.Owner is Nexus && player.Rank < 90)
             {
                 player.SendError("Forbidden.");
@@ -223,14 +224,27 @@ namespace wServer.realm.commands
             w.BroadcastPacket(new Notification
             {
                 Color = new ARGB(0xffff0000),
-                ObjectId = player.Id,
+                ObjectId = player.IsControlling ? player.SpectateTarget.Id : player.Id,
                 Message = notif
             }, null);
+
+            if (player.IsControlling)
+            {
+                w.BroadcastPacket(new Text
+                {
+                    Name = $"#{player.SpectateTarget.ObjectDesc.DisplayId}",
+                    NumStars = -1,
+                    BubbleTime = 0,
+                    Txt = notif
+                }, null);
+                return;
+            }
 
             w.BroadcastPacket(new Text
             {
                 Name = $"#{player.Name}",
                 NumStars = player.Stars,
+                Admin = player.Admin,
                 BubbleTime = 0,
                 Txt = notif
             }, null);
@@ -300,7 +314,9 @@ namespace wServer.realm.commands
 
     class ClearSpawnsCommand : Command
     {
-        public ClearSpawnsCommand() : base("clearspawn", 30, alias: "cs") { }
+        public ClearSpawnsCommand() : base("clearspawn", 30, alias: "cs")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -321,11 +337,13 @@ namespace wServer.realm.commands
                     entity.Death(time);
                     removed++;
                 }
+
                 foreach (var entity in player.Owner.StaticObjects.Values.Where(e => e.Spawned == true))
                 {
                     player.Owner.LeaveWorld(entity);
                     removed++;
                 }
+
                 if (++iterations >= 5)
                     break;
             }
@@ -337,7 +355,9 @@ namespace wServer.realm.commands
 
     class ClearGravesCommand : Command
     {
-        public ClearGravesCommand() : base("cleargraves", 30, alias: "cgraves") { }
+        public ClearGravesCommand() : base("cleargraves", 30, alias: "cgraves")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -367,7 +387,9 @@ namespace wServer.realm.commands
 
     class ToggleEffCommand : Command
     {
-        public ToggleEffCommand() : base("eff", 30) { }
+        public ToggleEffCommand() : base("eff", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -384,7 +406,7 @@ namespace wServer.realm.commands
                 return false;
             }
 
-            var target = player;
+            var target = player.IsControlling ? player.SpectateTarget : player;
             if ((target.ConditionEffects & (ConditionEffects)((ulong)1 << (int)effect)) != 0)
             {
                 //remove
@@ -403,13 +425,16 @@ namespace wServer.realm.commands
                     DurationMS = -1
                 });
             }
+
             return true;
         }
     }
 
     class GodmodeCommand : Command
     {
-        public GodmodeCommand() : base("toggleGodmode", 80, "godmode") { }
+        public GodmodeCommand() : base("toggleGodmode", 80, "godmode")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -431,13 +456,16 @@ namespace wServer.realm.commands
                     DurationMS = -1
                 });
             }
+
             return true;
         }
     }
 
     class GuildRankCommand : Command
     {
-        public GuildRankCommand() : base("grank", 90) { }
+        public GuildRankCommand() : base("grank", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -454,7 +482,9 @@ namespace wServer.realm.commands
 
             // get command args
             var playerName = args.Substring(0, index);
-            var rank = args.Substring(index + 1).IsInt() ? args.Substring(index + 1).ToInt32() : RankNumberFromName(args.Substring(index + 1));
+            var rank = args.Substring(index + 1).IsInt()
+                ? args.Substring(index + 1).ToInt32()
+                : RankNumberFromName(args.Substring(index + 1));
             if (rank == -1)
             {
                 player.SendError("Unknown rank!");
@@ -472,6 +502,7 @@ namespace wServer.realm.commands
                 player.SendError("Cannot rank the unnamed...");
                 return false;
             }
+
             var id = player.Manager.Database.ResolveId(playerName);
             var acc = player.Manager.Database.GetAccount(id);
             if (id == 0 || acc == null)
@@ -508,13 +539,16 @@ namespace wServer.realm.commands
                 case "founder":
                     return 40;
             }
+
             return -1;
         }
     }
 
     class GimmeCommand : Command
     {
-        public GimmeCommand() : base("gimme", 30, alias: "give") { }
+        public GimmeCommand() : base("gimme", 30, alias: "give")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -569,7 +603,9 @@ namespace wServer.realm.commands
 
     class TpPosCommand : Command
     {
-        public TpPosCommand() : base("tpPos", 90, alias: "goto") { }
+        public TpPosCommand() : base("tpPos", 90, alias: "goto")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -596,7 +632,9 @@ namespace wServer.realm.commands
 
     class SetpieceCommand : Command
     {
-        public SetpieceCommand() : base("setpiece", 30) { }
+        public SetpieceCommand() : base("setpiece", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string setPiece)
         {
@@ -623,7 +661,7 @@ namespace wServer.realm.commands
                 try
                 {
                     ISetPiece piece = (ISetPiece)Activator.CreateInstance(Type.GetType(
-                    "wServer.realm.setpieces." + setPiece, true, true));
+                        "wServer.realm.setpieces." + setPiece, true, true));
                     piece.RenderSetPiece(player.Owner, new IntPoint((int)player.X + 1, (int)player.Y + 1));
                     return true;
                 }
@@ -640,10 +678,12 @@ namespace wServer.realm.commands
             }
         }
     }
-  
+
     class KillAllCommand : Command
     {
-        public KillAllCommand() : base("killAll", 30, alias: "ka") { }
+        public KillAllCommand() : base("killAll", 30, alias: "ka")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -661,13 +701,14 @@ namespace wServer.realm.commands
                 lastKilled = killed;
                 foreach (var i in player.Owner.Enemies.Values.Where(e =>
                     e.ObjectDesc != null && e.ObjectDesc.ObjectId != null
-                    && e.ObjectDesc.Enemy && e.ObjectDesc.ObjectId != "Tradabad Nexus Crier"
-                    && e.ObjectDesc.ObjectId.ContainsIgnoreCase(args)))
+                                         && e.ObjectDesc.Enemy && e.ObjectDesc.ObjectId != "Tradabad Nexus Crier"
+                                         && e.ObjectDesc.ObjectId.ContainsIgnoreCase(args)))
                 {
                     i.Spawned = true;
                     i.Death(time);
                     killed++;
                 }
+
                 if (++iterations >= 5)
                     break;
             }
@@ -679,7 +720,9 @@ namespace wServer.realm.commands
 
     class KickCommand : Command
     {
-        public KickCommand() : base("kick", 30) { }
+        public KickCommand() : base("kick", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -698,6 +741,7 @@ namespace wServer.realm.commands
                     return true;
                 }
             }
+
             player.SendError($"Player '{args}' could not be found!");
             return false;
         }
@@ -705,7 +749,9 @@ namespace wServer.realm.commands
 
     class GetQuestCommand : Command
     {
-        public GetQuestCommand() : base("getQuest", 90) { }
+        public GetQuestCommand() : base("getQuest", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -714,6 +760,7 @@ namespace wServer.realm.commands
                 player.SendError("Player does not have a quest!");
                 return false;
             }
+
             player.SendInfo("Quest location: (" + player.Quest.X + ", " + player.Quest.Y + ")");
             return true;
         }
@@ -721,7 +768,9 @@ namespace wServer.realm.commands
 
     class OryxSayCommand : Command
     {
-        public OryxSayCommand() : base("oryxSay", 90, alias: "osay") { }
+        public OryxSayCommand() : base("oryxSay", 90, alias: "osay")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -732,7 +781,9 @@ namespace wServer.realm.commands
 
     class AnnounceCommand : Command
     {
-        public AnnounceCommand() : base("announce", 80) { }
+        public AnnounceCommand() : base("announce", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -743,7 +794,9 @@ namespace wServer.realm.commands
 
     class SummonCommand : Command
     {
-        public SummonCommand() : base("summon", 90) { }
+        public SummonCommand() : base("summon", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -758,6 +811,7 @@ namespace wServer.realm.commands
                     return true;
                 }
             }
+
             player.SendError($"Player '{args}' could not be found!");
             return false;
         }
@@ -765,7 +819,9 @@ namespace wServer.realm.commands
 
     class SummonAllCommand : Command
     {
-        public SummonAllCommand() : base("summonall", 90) { }
+        public SummonAllCommand() : base("summonall", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -782,7 +838,9 @@ namespace wServer.realm.commands
 
     class KillPlayerCommand : Command
     {
-        public KillPlayerCommand() : base("killPlayer", 100) { }
+        public KillPlayerCommand() : base("killPlayer", 100)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -796,6 +854,7 @@ namespace wServer.realm.commands
                     return true;
                 }
             }
+
             player.SendError($"Player '{args}' could not be found!");
             return false;
         }
@@ -803,13 +862,16 @@ namespace wServer.realm.commands
 
     class SizeCommand : Command
     {
-        public SizeCommand() : base("size", 30) { }
+        public SizeCommand() : base("size", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
             if (string.IsNullOrEmpty(args))
             {
-                player.SendError("Usage: /size <positive integer>. Using 0 will restore the default size for the sprite.");
+                player.SendError(
+                    "Usage: /size <positive integer>. Using 0 will restore the default size for the sprite.");
                 return false;
             }
 
@@ -826,13 +888,15 @@ namespace wServer.realm.commands
                 min = 50;
                 max = 200;
             }
+
             if (size < min && size != 0 || size > max)
             {
-                player.SendError($"Invalid size. Size needs to be within the range: {min}-{max}. Use 0 to reset size to default.");
+                player.SendError(
+                    $"Invalid size. Size needs to be within the range: {min}-{max}. Use 0 to reset size to default.");
                 return false;
             }
 
-            var target = player;
+            var target = player.IsControlling ? player.SpectateTarget : player;
             if (size == 0)
                 target.RestoreDefaultSize();
             else
@@ -848,7 +912,9 @@ namespace wServer.realm.commands
         // An external program is used to monitor the world server existance.
         // If !exist it automatically restarts it.
 
-        public RebootCommand() : base("reboot", 100) { }
+        public RebootCommand() : base("reboot", 100)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -929,7 +995,9 @@ namespace wServer.realm.commands
 
     class ReSkinCommand : Command
     {
-        public ReSkinCommand() : base("reskin", 40) { }
+        public ReSkinCommand() : base("reskin", 40)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -950,7 +1018,8 @@ namespace wServer.realm.commands
 
             if (skin != 0 && !skins.Contains(skin))
             {
-                player.SendError("Error setting skin. Either the skin type doesn't exist or the skin is for another class.");
+                player.SendError(
+                    "Error setting skin. Either the skin type doesn't exist or the skin is for another class.");
                 return false;
             }
 
@@ -965,7 +1034,9 @@ namespace wServer.realm.commands
 
     class MaxCommand : Command
     {
-        public MaxCommand() : base("max", 30) { }
+        public MaxCommand() : base("max", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -993,7 +1064,9 @@ namespace wServer.realm.commands
 
     class TpQuestCommand : Command
     {
-        public TpQuestCommand() : base("tq", 90) { }
+        public TpQuestCommand() : base("tq", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1028,7 +1101,7 @@ namespace wServer.realm.commands
             if (!match.Success)
             {
                 player?.SendError("Usage: /mute <player name> <time out in minutes>\\n" +
-                                 "Time parameter is optional. If left out player will be muted until unmuted.");
+                                  "Time parameter is optional. If left out player will be muted until unmuted.");
                 return false;
             }
 
@@ -1052,16 +1125,20 @@ namespace wServer.realm.commands
                 player?.SendError("Account not found!");
                 return false;
             }
+
             if (acc.IP == null)
             {
-                player?.SendError("Account has no associated IP address. Player must login at least once before being muted.");
+                player?.SendError(
+                    "Account has no associated IP address. Player must login at least once before being muted.");
                 return false;
             }
+
             if (acc.IP.Equals(player?.Client.Account.IP))
             {
                 player?.SendError("Mute failed. That action would cause yourself to be muted (IPs are the same).");
                 return false;
             }
+
             if (acc.Admin)
             {
                 player?.SendError("Cannot mute other admins.");
@@ -1070,7 +1147,7 @@ namespace wServer.realm.commands
 
             // mute player if currently connected
             foreach (var client in _manager.Clients.Keys
-                        .Where(c => c.Player != null && c.IP.Equals(acc.IP) && !c.Player.Client.Account.Admin))
+                .Where(c => c.Player != null && c.IP.Equals(acc.IP) && !c.Player.Client.Account.Admin))
             {
                 client.Player.Muted = true;
             }
@@ -1078,7 +1155,8 @@ namespace wServer.realm.commands
             if (player != null)
             {
                 if (timeout > 0)
-                    _manager.Chat.SendInfo(id, "You have been muted by " + player.Name + " for " + timeout + " minutes.");
+                    _manager.Chat.SendInfo(id,
+                        "You have been muted by " + player.Name + " for " + timeout + " minutes.");
                 else
                     _manager.Chat.SendInfo(id, "You have been muted by " + player.Name + ".");
             }
@@ -1116,7 +1194,9 @@ namespace wServer.realm.commands
 
     class UnMuteCommand : Command
     {
-        public UnMuteCommand() : base("unmute", 80) { }
+        public UnMuteCommand() : base("unmute", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -1136,9 +1216,11 @@ namespace wServer.realm.commands
                 player.SendError("Account not found!");
                 return false;
             }
+
             if (acc.IP == null)
             {
-                player.SendError("Account has no associated IP address. Player must login at least once before being unmuted.");
+                player.SendError(
+                    "Account has no associated IP address. Player must login at least once before being unmuted.");
                 return false;
             }
 
@@ -1169,7 +1251,9 @@ namespace wServer.realm.commands
 
     class BanAccountCommand : Command
     {
-        public BanAccountCommand() : base("ban", 80) { }
+        public BanAccountCommand() : base("ban", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1197,6 +1281,7 @@ namespace wServer.realm.commands
                 {
                     bInfo.accountId = player.Manager.Database.ResolveId(bInfo.Name);
                 }
+
                 bInfo.banReasons = match.Groups[2].Value;
                 bInfo.banLiftTime = -1;
             }
@@ -1207,16 +1292,19 @@ namespace wServer.realm.commands
                 player.SendError("If you specify a player name to ban, the name needs to be unique.");
                 return false;
             }
+
             if (bInfo.accountId == 0)
             {
                 player.SendError("Account not found...");
                 return false;
             }
+
             if (string.IsNullOrWhiteSpace(bInfo.banReasons))
             {
                 player.SendError("A reason must be provided.");
                 return false;
             }
+
             var acc = player.Manager.Database.GetAccount(bInfo.accountId);
 
             // ban player + disconnect if currently connected
@@ -1225,9 +1313,8 @@ namespace wServer.realm.commands
                 .SingleOrDefault(c => c.Account != null && c.Account.AccountId == bInfo.accountId);
             target?.Disconnect();
 
-            player.SendInfo(!string.IsNullOrEmpty(bInfo.Name) ?
-                $"{bInfo.Name} successfully banned." :
-                "Ban successful.");
+            player.SendInfo(
+                !string.IsNullOrEmpty(bInfo.Name) ? $"{bInfo.Name} successfully banned." : "Ban successful.");
             return true;
         }
 
@@ -1242,7 +1329,9 @@ namespace wServer.realm.commands
 
     class BanIPCommand : Command
     {
-        public BanIPCommand() : base("banip", 80, alias: "ipban") { }
+        public BanIPCommand() : base("banip", 80, alias: "ipban")
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1265,6 +1354,7 @@ namespace wServer.realm.commands
             {
                 id = db.ResolveId(idstr);
             }
+
             var reason = match.Groups[2].Value;
 
             // run checks
@@ -1273,22 +1363,26 @@ namespace wServer.realm.commands
                 player.SendError("If you specify a player name to ban, the name needs to be unique.");
                 return false;
             }
+
             if (id == 0)
             {
                 player.SendError("Account not found...");
                 return false;
             }
+
             if (string.IsNullOrWhiteSpace(reason))
             {
                 player.SendError("A reason must be provided.");
                 return false;
             }
+
             var acc = db.GetAccount(id);
             if (string.IsNullOrEmpty(acc.IP))
             {
                 player.SendError("Failed to ip ban player. IP not logged...");
                 return false;
             }
+
             if (player.AccountId != acc.AccountId && acc.IP.Equals(player.Client.Account.IP))
             {
                 player.SendError("IP ban failed. That action would cause yourself to be banned (IPs are the same).");
@@ -1312,7 +1406,9 @@ namespace wServer.realm.commands
 
     class UnBanAccountCommand : Command
     {
-        public UnBanAccountCommand() : base("unban", 90) { }
+        public UnBanAccountCommand() : base("unban", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1350,11 +1446,13 @@ namespace wServer.realm.commands
                 player.SendInfo($"{acc.Name} wasn't banned...");
                 return true;
             }
+
             if (banned && ipBanned)
             {
                 player.SendInfo($"Success! {acc.Name}'s account and IP no longer banned.");
                 return true;
             }
+
             if (banned)
             {
                 player.SendInfo($"Success! {acc.Name}'s account no longer banned.");
@@ -1368,7 +1466,9 @@ namespace wServer.realm.commands
 
     class ClearInvCommand : Command
     {
-        public ClearInvCommand() : base("clearinv", 80) { }
+        public ClearInvCommand() : base("clearinv", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1381,7 +1481,9 @@ namespace wServer.realm.commands
 
     class CloseRealmCommand : Command
     {
-        public CloseRealmCommand() : base("closerealm", 90) { }
+        public CloseRealmCommand() : base("closerealm", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1406,7 +1508,9 @@ namespace wServer.realm.commands
 
     class QuakeCommand : Command
     {
-        public QuakeCommand() : base("quake", 90) { }
+        public QuakeCommand() : base("quake", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string worldName)
         {
@@ -1453,7 +1557,9 @@ namespace wServer.realm.commands
 
     class MusicCommand : Command
     {
-        public MusicCommand() : base("music", 30) { }
+        public MusicCommand() : base("music", 30)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string music)
         {
@@ -1502,13 +1608,16 @@ namespace wServer.realm.commands
                 }));
                 i++;
             }
+
             return true;
         }
     }
 
     class VisitCommand : Command
     {
-        public VisitCommand() : base("visit", 80) { }
+        public VisitCommand() : base("visit", 80)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {
@@ -1541,7 +1650,9 @@ namespace wServer.realm.commands
 
     class LinkCommand : Command
     {
-        public LinkCommand() : base("link", 40) { }
+        public LinkCommand() : base("link", 40)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1568,7 +1679,9 @@ namespace wServer.realm.commands
 
     class UnLinkCommand : Command
     {
-        public UnLinkCommand() : base("unlink", 40) { }
+        public UnLinkCommand() : base("unlink", 40)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1608,20 +1721,24 @@ namespace wServer.realm.commands
                 for (var v = 0; v < statInfo.Length; v++)
                 {
                     player.Stats.Base[v] +=
-                    (statInfo[v].MaxIncrease + statInfo[v].MinIncrease) * (20 - player.Level) / 2;
+                        (statInfo[v].MaxIncrease + statInfo[v].MinIncrease) * (20 - player.Level) / 2;
                     if (player.Stats.Base[v] > statInfo[v].MaxValue)
                         player.Stats.Base[v] = statInfo[v].MaxValue;
                 }
+
                 player.Level = 20;
                 return true;
             }
+
             return false;
         }
     }
 
     class RenameCommand : Command
     {
-        public RenameCommand() : base("rename", 90) { }
+        public RenameCommand() : base("rename", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1691,7 +1808,9 @@ namespace wServer.realm.commands
 
     class UnnameCommand : Command
     {
-        public UnnameCommand() : base("unname", 90) { }
+        public UnnameCommand() : base("unname", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1744,9 +1863,11 @@ namespace wServer.realm.commands
         }
     }
 
-        class GiftCommand : Command
+    class GiftCommand : Command
     {
-        public GiftCommand() : base("gift", 90) { }
+        public GiftCommand() : base("gift", 90)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string args)
         {
@@ -1777,6 +1898,7 @@ namespace wServer.realm.commands
                 player.SendError("Cannot gift the unnamed...");
                 return false;
             }
+
             var id = manager.Database.ResolveId(playerName);
             var acc = manager.Database.GetAccount(id);
             if (id == 0 || acc == null)
@@ -1828,10 +1950,62 @@ namespace wServer.realm.commands
             return gameData.Items[objType];
         }
     }
-    
+
+    class WargCommand : Command
+    {
+        public WargCommand() : base("warg", 90)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                player.SendError("Usage: /warg <mob name>");
+                return false;
+            }
+
+            var target = player.GetNearestEntityByName(2900, name);
+            if (target == null)
+            {
+                player.SendError("Mob not found.");
+                return false;
+            }
+
+            if (target.Controller != null)
+            {
+                player.SendError("Only one person can control a mob at a time.");
+                return false;
+            }
+
+            if (player.SpectateTarget != null)
+            {
+                player.SpectateTarget.FocusLost -= player.ResetFocus;
+                player.SpectateTarget.Controller = null;
+            }
+
+            player.ApplyConditionEffect(ConditionEffectIndex.Paused);
+            target.FocusLost += player.ResetFocus;
+            target.Controller = player;
+            player.SpectateTarget = target;
+            player.Sight.UpdateCount++;
+
+            player.Owner.Timers.Add(new WorldTimer(500, (w, t) =>
+            {
+                player.Client.SendPacket(new SetFocus()
+                {
+                    ObjectId = target.Id
+                });
+            }));
+            return true;
+        }
+    }
+
     class CompactLOHCommand : Command
     {
-        public CompactLOHCommand() : base("compactLOH", 100, listCommand: false) { }
+        public CompactLOHCommand() : base("compactLOH", 100, listCommand: false)
+        {
+        }
 
         protected override bool Process(Player player, RealmTime time, string name)
         {

@@ -302,6 +302,7 @@
     <Compile Include="networking\packets\outgoing\QuestObjId.cs" />
     <Compile Include="networking\packets\outgoing\Reconnect.cs" />
     <Compile Include="networking\packets\outgoing\ServerPlayerShoot.cs" />
+    <Compile Include="networking\packets\outgoing\SetFocus.cs" />
     <Compile Include="networking\packets\outgoing\ShowEffect.cs" />
     <Compile Include="networking\packets\outgoing\SwitchMusic.cs" />
     <Compile Include="networking\packets\outgoing\Text.cs" />

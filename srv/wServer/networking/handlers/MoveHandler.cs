@@ -23,14 +23,15 @@ namespace wServer.networking.handlers
 
             var newX = packet.NewPosition.X;
             var newY = packet.NewPosition.Y;
-
-            if (newX != -1 && newX != player.X ||
-                newY != -1 && newY != player.Y)
+            if (player.SpectateTarget == null && player.Id == packet.ObjectId ||
+                player.SpectateTarget?.Id == packet.ObjectId)
             {
-                player.Move(newX, newY);
+                if (newX != -1 && newX != player.X ||
+                    newY != -1 && newY != player.Y)
+                {
+                    player.Move(newX, newY);
+                }
             }
-
-            //player.SendUpdate(time);
         }
     }
 }

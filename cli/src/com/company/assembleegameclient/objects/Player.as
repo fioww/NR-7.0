@@ -118,8 +118,6 @@ import kabam.rotmg.ui.model.TabStripModel;
       public var starred_:Boolean = false;
       public var ignored_:Boolean = false;
       public var distSqFromThisPlayer_:Number = 0;
-      protected var rotate_:Number = 0;
-      protected var relMoveVec_:Point = null;
       protected var moveMultiplier_:Number = 1;
       public var attackPeriod_:int = 0;
       public var nextAltAttack_:int = 0;
@@ -134,6 +132,7 @@ import kabam.rotmg.ui.model.TabStripModel;
       private var breathBackPath_:GraphicsPath = null;
       private var breathFill_:GraphicsSolidFill = null;
       private var breathPath_:GraphicsPath = null;
+      public var commune:GameObject;
       
       public function Player(objectXML:XML)
       {
@@ -176,23 +175,24 @@ import kabam.rotmg.ui.model.TabStripModel;
          player.tex2Id_ = int(playerXML.Tex2);
          return player;
       }
-      
-      public function setRelativeMovement(rotate:Number, relMoveVecX:Number, relMoveVecY:Number) : void
+
+      public function setRelativeMovement(angle:Number, x:Number, y:Number):void
       {
-         var temp:Number = NaN;
-         if(this.relMoveVec_ == null)
+         var controlled:GameObject = commune != null && !(commune is Player) ? commune : this;
+         var _local4:Number;
+         if (controlled.movDir == null)
          {
-            this.relMoveVec_ = new Point();
+            controlled.movDir = new Point();
          }
-         this.rotate_ = rotate;
-         this.relMoveVec_.x = relMoveVecX;
-         this.relMoveVec_.y = relMoveVecY;
-         if(isConfused())
+         controlled.rotateDir = angle;
+         controlled.movDir.x = x;
+         controlled.movDir.y = y;
+         if (isConfused())
          {
-            temp = this.relMoveVec_.x;
-            this.relMoveVec_.x = -this.relMoveVec_.y;
-            this.relMoveVec_.y = -temp;
-            this.rotate_ = -this.rotate_;
+            _local4 = controlled.movDir.x;
+            controlled.rotateDir = -(controlled.rotateDir);
+            controlled.movDir.x = -(controlled.movDir.y);
+            controlled.movDir.y = -(_local4);
          }
       }
       
@@ -336,193 +336,8 @@ import kabam.rotmg.ui.model.TabStripModel;
          return ret;
       }
       
-      public function modifyMove(x:Number, y:Number, newP:Point) : void
-      {
-         if(isParalyzed())
-         {
-            newP.x = x_;
-            newP.y = y_;
-            return;
-         }
-         var dx:Number = x - x_;
-         var dy:Number = y - y_;
-         if(dx < MOVE_THRESHOLD && dx > -MOVE_THRESHOLD && dy < MOVE_THRESHOLD && dy > -MOVE_THRESHOLD)
-         {
-            this.modifyStep(x,y,newP);
-            return;
-         }
-         var stepSize:Number = MOVE_THRESHOLD / Math.max(Math.abs(dx),Math.abs(dy));
-         var d:Number = 0;
-         newP.x = x_;
-         newP.y = y_;
-         var done:Boolean = false;
-         while(!done)
-         {
-            if(d + stepSize >= 1)
-            {
-               stepSize = 1 - d;
-               done = true;
-            }
-            this.modifyStep(newP.x + dx * stepSize,newP.y + dy * stepSize,newP);
-            d = d + stepSize;
-         }
-      }
-      
-      public function modifyStep(x:Number, y:Number, newP:Point) : void
-      {
-         var nextXBorder:Number = NaN;
-         var nextYBorder:Number = NaN;
-         var xCross:Boolean = x_ % 0.5 == 0 && x != x_ || int(x_ / 0.5) != int(x / 0.5);
-         var yCross:Boolean = y_ % 0.5 == 0 && y != y_ || int(y_ / 0.5) != int(y / 0.5);
-         if(!xCross && !yCross || this.isValidPosition(x,y))
-         {
-            newP.x = x;
-            newP.y = y;
-            return;
-         }
-         if(xCross)
-         {
-            nextXBorder = x > x_?Number(int(x * 2) / 2):Number(int(x_ * 2) / 2);
-            if(int(nextXBorder) > int(x_))
-            {
-               nextXBorder = nextXBorder - 0.01;
-            }
-         }
-         if(yCross)
-         {
-            nextYBorder = y > y_?Number(int(y * 2) / 2):Number(int(y_ * 2) / 2);
-            if(int(nextYBorder) > int(y_))
-            {
-               nextYBorder = nextYBorder - 0.01;
-            }
-         }
-         if(!xCross)
-         {
-            newP.x = x;
-            newP.y = nextYBorder;
-            return;
-         }
-         if(!yCross)
-         {
-            newP.x = nextXBorder;
-            newP.y = y;
-            return;
-         }
-         var xBorderDist:Number = x > x_?Number(x - nextXBorder):Number(nextXBorder - x);
-         var yBorderDist:Number = y > y_?Number(y - nextYBorder):Number(nextYBorder - y);
-         if(xBorderDist > yBorderDist)
-         {
-            if(this.isValidPosition(x,nextYBorder))
-            {
-               newP.x = x;
-               newP.y = nextYBorder;
-               return;
-            }
-            if(this.isValidPosition(nextXBorder,y))
-            {
-               newP.x = nextXBorder;
-               newP.y = y;
-               return;
-            }
-         }
-         else
-         {
-            if(this.isValidPosition(nextXBorder,y))
-            {
-               newP.x = nextXBorder;
-               newP.y = y;
-               return;
-            }
-            if(this.isValidPosition(x,nextYBorder))
-            {
-               newP.x = x;
-               newP.y = nextYBorder;
-               return;
-            }
-         }
-         newP.x = nextXBorder;
-         newP.y = nextYBorder;
-      }
-      
-      public function isValidPosition(x:Number, y:Number) : Boolean
-      {
-         var square:Square = map_.getSquare(x,y);
-         if(square_ != square && (square == null || !square.isWalkable()))
-         {
-            return false;
-         }
-         var xFrac:Number = x - int(x);
-         var yFrac:Number = y - int(y);
-         if(xFrac < 0.5)
-         {
-            if(this.isFullOccupy(x - 1,y))
-            {
-               return false;
-            }
-            if(yFrac < 0.5)
-            {
-               if(this.isFullOccupy(x,y - 1) || this.isFullOccupy(x - 1,y - 1))
-               {
-                  return false;
-               }
-            }
-            else if(yFrac > 0.5)
-            {
-               if(this.isFullOccupy(x,y + 1) || this.isFullOccupy(x - 1,y + 1))
-               {
-                  return false;
-               }
-            }
-         }
-         else if(xFrac > 0.5)
-         {
-            if(this.isFullOccupy(x + 1,y))
-            {
-               return false;
-            }
-            if(yFrac < 0.5)
-            {
-               if(this.isFullOccupy(x,y - 1) || this.isFullOccupy(x + 1,y - 1))
-               {
-                  return false;
-               }
-            }
-            else if(yFrac > 0.5)
-            {
-               if(this.isFullOccupy(x,y + 1) || this.isFullOccupy(x + 1,y + 1))
-               {
-                  return false;
-               }
-            }
-         }
-         else if(yFrac < 0.5)
-         {
-            if(this.isFullOccupy(x,y - 1))
-            {
-               return false;
-            }
-         }
-         else if(yFrac > 0.5)
-         {
-            if(this.isFullOccupy(x,y + 1))
-            {
-               return false;
-            }
-         }
-         return true;
-      }
-      
-      public function isFullOccupy(x:Number, y:Number) : Boolean
-      {
-         var square:Square = map_.lookupSquare(x,y);
-         return square == null || square.tileType_ == 255 || square.obj_ != null && square.obj_.props_.fullOccupy_;
-      }
-      
       override public function update(time:int, dt:int) : Boolean
       {
-         var playerAngle:Number = NaN;
-         var moveSpeed:Number = NaN;
-         var moveVecAngle:Number = NaN;
          var d:int = 0;
 
          if(isHealing() && !isPaused() && Parameters.data_.eyeCandyParticles)
@@ -538,36 +353,23 @@ import kabam.rotmg.ui.model.TabStripModel;
             map_.removeObj(this.healingEffect_.objectId_);
             this.healingEffect_ = null;
          }
-         if(map_.player_ == this && isPaused())
+
+         var controlled:GameObject = commune != null && !(commune is Player) ? commune : this;
+         var angle:Number = Parameters.data_.cameraAngle;
+         if (controlled.rotateDir != 0)
+         {
+            angle = angle + dt * Parameters.PLAYER_ROTATE_SPEED * controlled.rotateDir;
+            Parameters.data_.cameraAngle = angle;
+         }
+
+         if (map_.player_ == this && isPaused() && this.commune == null || this.commune is Player)
          {
             return true;
          }
-         if(this.relMoveVec_ != null)
+
+         if (controlled.movDir != null)
          {
-            playerAngle = Parameters.data_.cameraAngle;
-            if(this.rotate_ != 0)
-            {
-               playerAngle = playerAngle + dt * Parameters.PLAYER_ROTATE_SPEED * this.rotate_;
-               Parameters.data_.cameraAngle = playerAngle;
-            }
-            if(this.relMoveVec_.x != 0 || this.relMoveVec_.y != 0)
-            {
-               moveSpeed = this.getMoveSpeed();
-               moveVecAngle = Math.atan2(this.relMoveVec_.y,this.relMoveVec_.x);
-               moveVec_.x = moveSpeed * Math.cos(playerAngle + moveVecAngle);
-               moveVec_.y = moveSpeed * Math.sin(playerAngle + moveVecAngle);
-            }
-            else
-            {
-               moveVec_.x = 0;
-               moveVec_.y = 0;
-            }
-            if(square_ != null && square_.props_.push_)
-            {
-               moveVec_.x = moveVec_.x - square_.props_.animate_.dx_ / 1000;
-               moveVec_.y = moveVec_.y - square_.props_.animate_.dy_ / 1000;
-            }
-            this.walkTo(x_ + dt * moveVec_.x,y_ + dt * moveVec_.y);
+            controlled.collisionBlockMove(dt, getMoveSpeed());
          }
          else if(!super.update(time,dt))
          {
@@ -669,20 +471,22 @@ import kabam.rotmg.ui.model.TabStripModel;
             this.drawBreathBar(graphicsData,time);
          }
       }
-      
-      private function getMoveSpeed() : Number
+
+      private function getMoveSpeed():Number
       {
-         if(isSlowed())
+         var controlled:GameObject = commune != null && !(commune is Player) ? commune : this;
+         if (controlled.isSlowed())
          {
             return MIN_MOVE_SPEED * this.moveMultiplier_;
          }
+
          var moveSpeed:Number = MIN_MOVE_SPEED + this.speed_ / 75 * (MAX_MOVE_SPEED - MIN_MOVE_SPEED);
-         if(isSpeedy() || isNinjaSpeedy())
+         if (controlled.isSpeedy() || controlled.isNinjaSpeedy())
          {
-            moveSpeed = moveSpeed * 1.5;
+            moveSpeed *= 1.5;
          }
-         moveSpeed = moveSpeed * this.moveMultiplier_;
-         return moveSpeed;
+
+         return moveSpeed * this.moveMultiplier_;
       }
       
       public function attackFrequency() : Number

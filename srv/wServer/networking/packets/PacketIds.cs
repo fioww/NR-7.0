@@ -74,6 +74,7 @@ namespace wServer.networking.packets
         PLAYSOUND = 68,
         GLOBAL_NOTIFICATION = 69,
         RESKIN = 70,
-        SWITCH_MUSIC = 106
+        SWITCH_MUSIC = 71,
+        SET_FOCUS = 72
     }
 }

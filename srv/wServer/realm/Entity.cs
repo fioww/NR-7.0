@@ -48,6 +48,7 @@ namespace wServer.realm
         private readonly SV<int> _conditionEffects1;
         private readonly SV<int> _conditionEffects2;
         private ConditionEffects _conditionEffects;
+        public event EventHandler FocusLost;
 
         public string Name
         {
@@ -78,13 +79,21 @@ namespace wServer.realm
         public float RealY => _y.GetValue();
         public float X
         {
-            get { return _x.GetValue(); }
-            private set { _x.SetValue(value); }
+            get
+            {
+                var player = this as Player;
+                return player?.SpectateTarget?.RealX ?? _x.GetValue();
+            }
+            private set => _x.SetValue(value);
         }
         public float Y
         {
-            get { return _y.GetValue(); }
-            private set { _y.SetValue(value); }
+            get
+            {
+                var player = this as Player;
+                return player?.SpectateTarget?.RealY ?? _y.GetValue();
+            }
+            private set => _y.SetValue(value);
         }
 
         Entity IProjectileOwner.Self => this;
@@ -740,6 +749,7 @@ namespace wServer.realm
         public virtual void Dispose()
         {
             Owner = null;
+            FocusLost?.Invoke(this, EventArgs.Empty);
         }
     }
 }

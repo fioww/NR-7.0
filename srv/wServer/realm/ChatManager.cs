@@ -46,8 +46,14 @@ namespace wServer.realm
         public void Say(Player src, string text)
         {
             if (string.IsNullOrWhiteSpace(text))
+            {
                 return;
+            }
 
+            if (src.IsControlling)
+            {
+                Mob(src.SpectateTarget, text);
+            }
             else
             {
                 var tp = new Text()
@@ -99,7 +105,7 @@ namespace wServer.realm
                 return;
 
             var world = entity.Owner;
-            var name = entity.ObjectDesc.DisplayId;
+            var name = entity.ObjectDesc.DisplayName;
 
             world.BroadcastPacket(new Text()
             {

@@ -284,7 +284,6 @@ namespace wServer.logic
             )
             .Init("Paper Bot",
                 new State(
-                    new DropPortalOnDeath("Puppet Theatre Portal", 0.15),
                     new Prioritize(
                         new Orbit(0.4, 3, target: "Rock Bot"),
                         new Wander(0.8)
